@@ -31,13 +31,29 @@ struct StockCardInfo: View {
             .frame(width: self.show ? screen.width - 40 : screen.width - 100, height: self.show ? 520 : 150)
             .opacity(self.show ? 1 : 0)
             
-            StockCardInfoHeaderView(title: "Market capitalization", info: "\(symbolMarket?.marketInfo!.marketCap ?? 0)", systemImageName: "waveform.path.ecg", color: #colorLiteral(red: 0.007843137255, green: 0.768627451, blue: 0.5843137255, alpha: 1), show: $show, translation: $dragTranslation, isDraging: $isDraging)
+            StockCardInfoHeaderView(title: "Market capitalization", info: formattingCapitalizationValue(), systemImageName: "waveform.path.ecg", color: #colorLiteral(red: 0.007843137255, green: 0.768627451, blue: 0.5843137255, alpha: 1), show: $show, translation: $dragTranslation, isDraging: $isDraging)
                 .offset(y: self.show ? self.dragTranslation.height / 35 : 0)
         }
         .scaleEffect(self.isDraging ? (1 - self.dragTranslation.height / 4000) : 1)
         .offset(x: 0, y: self.show ? 0 : 310)
         .animation(.spring(response: 0.33, dampingFraction: 0.49, blendDuration: 0))
     }
+    
+    private func formattingCapitalizationValue() -> String {
+        guard let mkt = symbolMarket?.marketInfo?.marketCap else { return "" }
+        if mkt >= 1_000_000_000_000 {
+            let firstDigit: Int = mkt / 1_000_000_000_000
+            let secondDigits: Int = (mkt - 1_000_000_000_000) / 1_000_000_000
+            return "$\(firstDigit),\(secondDigits) T"
+        } else if mkt >= 1_000_000_000 {
+            let firstDigit: Int = mkt / 1_000_000_000
+            let secondDigits: Int = (mkt - 1_000_000_000) / 10_000_000_000
+            return "$\(firstDigit),\(secondDigits) B"
+        } else {
+            return "$\(mkt)"
+        }
+    }
+    
 }
 
 struct StockVolumInfo_Previews: PreviewProvider {

@@ -36,7 +36,7 @@ struct Home: View {
                                     desactiveCard()
                                 }, label: {
                                     Image(systemName: "arrow.backward")
-                                        .foregroundColor(.primary)
+                                        .foregroundColor(Color(#colorLiteral(red: 0.007843137255, green: 0.768627451, blue: 0.5843137255, alpha: 1)))
                                         .font(.system(size: 22, weight: .bold, design: .rounded))
                                         .opacity(self.active ? 1 : 0)
                                         .offset(x: self.active ? 0 : -100, y: 0)
