@@ -10,25 +10,27 @@ import SwiftUI
 struct StockChart: View {
     var stockList: [StockPrice]
     var maxPrice: CGFloat = 0
+    private var strokeColor = #colorLiteral(red: 0.007843137255, green: 0.768627451, blue: 0.5843137255, alpha: 1)
     
     var body: some View {
         
         LineGraph(dataPoints: stockList.map { ($0.average! - getMin()) / (self.maxPrice - self.getMin()) })
-            .stroke(Color(#colorLiteral(red: 0.007843137255, green: 0.768627451, blue: 0.5843137255, alpha: 1)), style: StrokeStyle(lineWidth: 3.5, lineCap: .round, lineJoin: .round))
+            .stroke(Color(strokeColor), style: StrokeStyle(lineWidth: 3.5, lineCap: .round, lineJoin: .round))
             .aspectRatio(16/9, contentMode: .fit)
-            .padding()
+            .padding(.horizontal)
     }
     
-    init(stockList: [StockPrice]) {
-        self.stockList = stockList
+    init(symbolMarket: SymbolMarket) {
+        self.stockList = symbolMarket.stockPriceList!
         self.maxPrice = getMax()
+        self.strokeColor = symbolMarket.marketInfo!.changePercent < 0 ? #colorLiteral(red: 0.9999999404, green: 0.1764707565, blue: 0.3333333135, alpha: 1) : #colorLiteral(red: 0.007843137255, green: 0.768627451, blue: 0.5843137255, alpha: 1)
     }
     
     private func getMin() -> CGFloat {
         var min: CGFloat = 100000
         for price in stockList {
             if let average = price.average {
-                if price.average! < min {
+                if average < min {
                     min = price.average!
                 }
             }
@@ -51,7 +53,7 @@ struct StockChart: View {
 
 struct StockChart_Previews: PreviewProvider {
     static var previews: some View {
-        StockChart(stockList: defaultStockList)
+        StockChart(symbolMarket: defaultSymbolMarket)
     }
 }
 

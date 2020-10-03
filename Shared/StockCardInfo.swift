@@ -11,6 +11,7 @@ struct StockCardInfo: View {
     @Binding var show: Bool
     @State private var dragTranslation = CGSize.zero
     @State private var isDraging = false
+    @Binding var symbolMarket: SymbolMarket?
     
     var body: some View {
         ZStack(alignment: .top) {
@@ -30,7 +31,7 @@ struct StockCardInfo: View {
             .frame(width: self.show ? screen.width - 40 : screen.width - 100, height: self.show ? 520 : 150)
             .opacity(self.show ? 1 : 0)
             
-            StockCardInfoHeaderView(title: "Today's Volume", info: "14,315,913", systemImageName: "waveform.path.ecg", color: #colorLiteral(red: 0.007843137255, green: 0.768627451, blue: 0.5843137255, alpha: 1), show: $show, translation: $dragTranslation, isDraging: $isDraging)
+            StockCardInfoHeaderView(title: "Market capitalization", info: "\(symbolMarket?.marketInfo!.marketCap ?? 0)", systemImageName: "waveform.path.ecg", color: #colorLiteral(red: 0.007843137255, green: 0.768627451, blue: 0.5843137255, alpha: 1), show: $show, translation: $dragTranslation, isDraging: $isDraging)
                 .offset(y: self.show ? self.dragTranslation.height / 35 : 0)
         }
         .scaleEffect(self.isDraging ? (1 - self.dragTranslation.height / 4000) : 1)
@@ -41,7 +42,7 @@ struct StockCardInfo: View {
 
 struct StockVolumInfo_Previews: PreviewProvider {
     static var previews: some View {
-        StockCardInfo(show: .constant(false))
+        StockCardInfo(show: .constant(false), symbolMarket: .constant(defaultSymbolMarket))
     }
 }
 

@@ -7,13 +7,16 @@
 
 import Foundation
 
-struct SymbolMarket {
+struct SymbolMarket: Identifiable {
+    let id = UUID()
+    var show: Bool = false
     var symbolName: String
     var stockPriceList: [StockPrice]?
     var marketInfo: MarketQuote?
+    var logo: URL?
     
     func isComplete() ->Bool {
-        return stockPriceList != nil && marketInfo != nil
+        return stockPriceList != nil && marketInfo != nil && logo != nil
     }
 }
 
@@ -44,6 +47,15 @@ final class StockServices {
                 // To do : handle error
             } else if let list = result {
                 symbolMarket.stockPriceList = list
+            }
+        }
+        
+        fetchLogo(for: symbol) { (result, error) in
+            if error != nil {
+                print(error?.localizedDescription as Any)
+                // To do : handle error
+            } else if let url = result {
+                symbolMarket.logo = url
             }
         }
     }
@@ -79,6 +91,20 @@ final class StockServices {
         }
     }
     
+    @discardableResult
+    func fetchLogo(for symbol: String, completion: @escaping (URL?, RestError?) -> ()) -> URLSessionDataTask? {
+        
+        let parameters: Param = [:]
+        
+        return client.load(path: "/stock/\(symbol)/logo", parameters: parameters) { result, error in
+            var url: URL? = nil
+            if let data = result as? Data {
+                url = self.parseSymbolLogo(data)
+            }
+            completion(url, error)
+        }
+    }
+    
     private func parseStockPrice(_ data: Data) -> [StockPrice]? {
         let decoder = JSONDecoder()
         do {
@@ -96,6 +122,19 @@ final class StockServices {
         do {
             let quote = try decoder.decode(MarketQuote.self, from: data)
             return quote
+        }
+        catch {
+            print(error)
+            return nil
+        }
+    }
+    
+    private func parseSymbolLogo(_ data: Data) -> URL? {
+        let decoder = JSONDecoder()
+        do {
+            let urlDico = try decoder.decode([String: String].self, from: data)
+            guard let stringUrl = urlDico["url"] else { return nil }
+            return URL(string: stringUrl)
         }
         catch {
             print(error)
