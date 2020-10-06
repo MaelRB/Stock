@@ -19,7 +19,7 @@ class HomeLogic: ObservableObject {
     
     init() {
 //        loadSymbol() / For now I will used hard coded values since I have not create a way to follow a symbol
-        symbolList = ["aapl", "tsla", "dis", "twtr"]
+        symbolList = ["aapl"]
         fetchDataForSymbols()
     }
     

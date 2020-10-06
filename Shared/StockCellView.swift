@@ -18,7 +18,6 @@ struct StockCellView: View {
     var body: some View {
         ZStack {
             
-            // Background
             Color(lightColor)
                 .frame(width: screen.width - 30, height: self.show ? 390 : 130)
                 .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
@@ -62,7 +61,7 @@ struct StockCellView: View {
             .background(Color(#colorLiteral(red: 0.9482057691, green: 0.9529708028, blue: 0.9658263326, alpha: 1)))
             .clipShape(RoundedRectangle(cornerRadius: 25, style: .continuous))
         }
-        .animation(Animation.spring(response: 0.4, dampingFraction: 0.65, blendDuration: 0).speed(1.2))
+        .animation(Animation.spring(response: 0.5, dampingFraction: 0.65, blendDuration: 0).speed(0.85))
         .onTapGesture {
             self.show.toggle()
             self.active.toggle()
