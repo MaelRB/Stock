@@ -11,6 +11,7 @@ struct StockCellView: View {
     var lightColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
     var darkColor = #colorLiteral(red: 0.8823529412, green: 0.8941176471, blue: 0.9215686275, alpha: 1)
     @Binding var show: Bool
+    @Binding var isMaxZ: Bool
     @Binding var active: Bool
     @Binding var currentSymbolMarket: SymbolMarket?
     var symbolMarket: SymbolMarket
@@ -51,7 +52,7 @@ struct StockCellView: View {
                     }
                     .frame(height: self.show ? 290 : 0)
                     .opacity(self.show ? 1 : 0)
-                    .shadow(color: .white, radius: 10, x: 0, y: 0)
+//                    .shadow(color: .white, radius: 10, x: 0, y: 0)
                     
                 }
                 .offset(x: 0, y: self.show ? 10 : 0)
@@ -61,11 +62,20 @@ struct StockCellView: View {
             .background(Color(#colorLiteral(red: 0.9482057691, green: 0.9529708028, blue: 0.9658263326, alpha: 1)))
             .clipShape(RoundedRectangle(cornerRadius: 25, style: .continuous))
         }
-        .animation(Animation.spring(response: 0.5, dampingFraction: 0.65, blendDuration: 0).speed(0.85))
+        .animation(.easeInOut)
         .onTapGesture {
+            
             self.show.toggle()
             self.active.toggle()
             self.currentSymbolMarket = symbolMarket
+            
+            if self.isMaxZ == false {
+                self.isMaxZ.toggle()
+            } else {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                    self.isMaxZ.toggle()
+                }
+            }
         }
     }
 }
@@ -73,9 +83,7 @@ struct StockCellView: View {
 struct StockCellView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            StockCellView(show: .constant(false), active: .constant(false), currentSymbolMarket: .constant(defaultSymbolMarket), symbolMarket: defaultSymbolMarket)
-            StockCellView(show: .constant(false), active: .constant(false), currentSymbolMarket: .constant(defaultSymbolMarket), symbolMarket: defaultSymbolMarket)
-                .previewDevice("iPhone 11")
+            StockCellView(show: .constant(false), isMaxZ: .constant(true), active: .constant(false), currentSymbolMarket: .constant(defaultSymbolMarket), symbolMarket: defaultSymbolMarket)
         }
     }
 }

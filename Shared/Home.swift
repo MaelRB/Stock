@@ -15,35 +15,38 @@ struct Home: View {
     
     var body: some View {
         GeometryReader { geoProxy in
-            ZStack {
-                VStack {
-                    NavigtionBarView(active: $active, symbolMarketList: $homeLogic.symbolMarketList)
-                        .animation(Animation.easeInOut)
-                    Spacer()
-                }
+            VStack {
+                NavigtionBarView(active: $active, symbolMarketList: $homeLogic.symbolMarketList)
+                    .animation(.easeInOut)
                 
                 ScrollView(showsIndicators: false) {
-                    VStack(spacing: 140) {
-                        
+                    ZStack {
                         if homeLogic.isFinishingLoading {
                             ForEach(homeLogic.symbolMarketList.indices) { index in
                                 GeometryReader { geo in
                                     StockCellView(
                                         show: self.$homeLogic.symbolMarketList[index].show,
+                                        isMaxZ: self.$homeLogic.symbolMarketList[index].isMaxZ,
                                         active: $active,
                                         currentSymbolMarket: $currentSymbolMarket,
                                         symbolMarket: homeLogic.symbolMarketList[index]
                                     )
-                                    .offset(x: 15, y: self.homeLogic.symbolMarketList[index].show ? -geo.frame(in: .global).minY + 45 + geoProxy.safeAreaInsets.top : 45 + geoProxy.safeAreaInsets.top)
-                                    .animation(.easeInOut(duration: 0.5))
+                                    .offset(x: 15, y: self.homeLogic.symbolMarketList[index].show ? -geo.frame(in: .global).minY + 90 + geoProxy.safeAreaInsets.top : 0)
                                     
                                 }
+                                .offset(x: 0, y: CGFloat(Int(index) * 155))
                                 .frame(maxHeight: 140)
-                                .zIndex(self.homeLogic.symbolMarketList[index].show ? 1 : 0)
-                                .offset(x: isNotShowing(index) ? screen.width : 0, y: isNotShowing(index) ? 0 : 0)
-                                .opacity(isNotShowing(index) ? 0 : 1)
+                                .zIndex(self.homeLogic.symbolMarketList[index].isMaxZ ? 1 : 0)
                                 .animation(.easeInOut)
                             }
+                        }
+                        
+                        VStack {
+                            Spacer()
+                            Color(.white)
+                                .frame(width: self.active ? screen.width : 0, height: self.active ? screen.height - 60 : 0, alignment: .center)
+                                
+                            Spacer()
                         }
                     }
                 }
@@ -108,7 +111,6 @@ struct NavigtionBarView: View {
             Divider()
                 .opacity(self.active ? 0 : 1)
         }
-        .frame(height: self.active ? 30 : 70)
         
     }
     
