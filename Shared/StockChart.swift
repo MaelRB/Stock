@@ -18,12 +18,14 @@ struct StockChart: View {
             .stroke(Color(strokeColor), style: StrokeStyle(lineWidth: 3.5, lineCap: .round, lineJoin: .round))
             .aspectRatio(16/9, contentMode: .fit)
             .padding(.horizontal)
+            
     }
     
     init(symbolMarket: SymbolMarket) {
         self.stockList = symbolMarket.stockPriceList!
         self.maxPrice = getMax()
         self.strokeColor = symbolMarket.marketInfo!.changePercent < 0 ? #colorLiteral(red: 0.9999999404, green: 0.1764707565, blue: 0.3333333135, alpha: 1) : #colorLiteral(red: 0.007843137255, green: 0.768627451, blue: 0.5843137255, alpha: 1)
+
     }
     
     private func getMin() -> CGFloat {

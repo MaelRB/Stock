@@ -12,8 +12,9 @@ struct StockCellView: View {
     var darkColor = #colorLiteral(red: 0.8823529412, green: 0.8941176471, blue: 0.9215686275, alpha: 1)
     @Binding var show: Bool
     @Binding var isMaxZ: Bool
-    @Binding var active: Bool
+    @Binding var isShowing: Bool
     @Binding var currentSymbolMarket: SymbolMarket?
+    @Binding var canShowStockView: Bool
     var symbolMarket: SymbolMarket
     
     var body: some View {
@@ -41,6 +42,7 @@ struct StockCellView: View {
                     VStack(spacing: 15) {
                         StockChart(symbolMarket: symbolMarket)
                             .foregroundColor(symbolMarket.marketInfo!.changePercent < 0 ? Color(#colorLiteral(red: 0.9999999404, green: 0.1764707565, blue: 0.3333333135, alpha: 1)) : Color(#colorLiteral(red: 0.007843137255, green: 0.768627451, blue: 0.5843137255, alpha: 1)))
+                            .animation(.easeInOut)
                         
                         HStack(spacing: 40) {
                             ForEach(0 ..< 5) { item in
@@ -52,7 +54,6 @@ struct StockCellView: View {
                     }
                     .frame(height: self.show ? 290 : 0)
                     .opacity(self.show ? 1 : 0)
-//                    .shadow(color: .white, radius: 10, x: 0, y: 0)
                     
                 }
                 .offset(x: 0, y: self.show ? 10 : 0)
@@ -66,8 +67,16 @@ struct StockCellView: View {
         .onTapGesture {
             
             self.show.toggle()
-            self.active.toggle()
+            self.isShowing.toggle()
             self.currentSymbolMarket = symbolMarket
+            
+            if self.canShowStockView == false {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                    self.canShowStockView.toggle()
+                }
+            } else {
+                self.canShowStockView.toggle()
+            }
             
             if self.isMaxZ == false {
                 self.isMaxZ.toggle()
@@ -77,13 +86,14 @@ struct StockCellView: View {
                 }
             }
         }
+        .disabled(self.show)
     }
 }
 
 struct StockCellView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            StockCellView(show: .constant(false), isMaxZ: .constant(true), active: .constant(false), currentSymbolMarket: .constant(defaultSymbolMarket), symbolMarket: defaultSymbolMarket)
+            StockCellView(show: .constant(false), isMaxZ: .constant(true), isShowing: .constant(false), currentSymbolMarket: .constant(defaultSymbolMarket), canShowStockView: .constant(true), symbolMarket: defaultSymbolMarket)
         }
     }
 }
