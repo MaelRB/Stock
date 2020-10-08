@@ -66,12 +66,12 @@ struct StockCellView: View {
         .animation(.easeInOut)
         .onTapGesture {
             
+            self.currentSymbolMarket = symbolMarket
             self.show.toggle()
             self.isShowing.toggle()
-            self.currentSymbolMarket = symbolMarket
             
             if self.canShowStockView == false {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                     self.canShowStockView.toggle()
                 }
             } else {

@@ -35,7 +35,7 @@ struct StockCardInfo: View {
                 .offset(y: self.show ? self.dragTranslation.height / 35 : 0)
         }
         .scaleEffect(self.isDraging ? (1 - self.dragTranslation.height / 4000) : 1)
-        .offset(x: 0, y: self.show ? 0 : 310)
+        .offset(x: 0, y: self.show ? 0 : 320)
         .animation(.spring(response: 0.33, dampingFraction: 0.49, blendDuration: 0))
     }
     
