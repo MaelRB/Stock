@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Lottie
 
 struct Home: View {
     @State private var isShowingStockView = false
@@ -19,46 +20,17 @@ struct Home: View {
                 NavigtionBarView(isShowing: $isShowingStockView, canShow: $canShowStockView, symbolMarketList: $homeLogic.symbolMarketList)
                     .animation(.easeInOut)
                 
-                ZStack {
-                    ScrollView(showsIndicators: false) {
-                        ZStack {
-                            if homeLogic.isFinishingLoading {
-                                ForEach(homeLogic.symbolMarketList.indices) { index in
-                                    GeometryReader { geo in
-                                        StockCellView(
-                                            show: self.$homeLogic.symbolMarketList[index].show,
-                                            isMaxZ: self.$homeLogic.symbolMarketList[index].isMaxZ,
-                                            isShowing: $isShowingStockView,
-                                            currentSymbolMarket: $currentSymbolMarket,
-                                            canShowStockView: $canShowStockView,
-                                            symbolMarket: homeLogic.symbolMarketList[index]
-                                        )
-                                        .offset(x: 15, y: self.homeLogic.symbolMarketList[index].show ? -geo.frame(in: .global).minY + 90 + geoProxy.safeAreaInsets.top : 0)
-                                        
-                                    }
-                                    .offset(x: 0, y: CGFloat(Int(index) * 155))
-                                    .frame(maxHeight: 140)
-                                    .zIndex(self.homeLogic.symbolMarketList[index].isMaxZ ? 1 : 0)
-                                    .animation(.easeInOut)
-                                }
-                            }
-                            
-                            VStack {
-                                Spacer()
-                                Color(.white)
-                                    .frame(width: self.isShowingStockView ? screen.width : 0, height: self.isShowingStockView ? screen.height - 60 : 0, alignment: .center)
-                                    
-                                Spacer()
-                            }
-                        }
+                if homeLogic.isFinishingLoading {
+                    StockList(isShowingStockView: $isShowingStockView, canShowStockView: $canShowStockView, currentSymbolMarket: $currentSymbolMarket, homeLogic: homeLogic, geoProxy: geoProxy)
+                } else {
+                    VStack {
+                        Spacer()
+                        LottieView(fileName: "loading")
+                            .frame(width: 200, height: 200)
+                        Spacer()
                     }
-                    .disabled(isShowingStockView)
-                    
-                    if canShowStockView {
-                        StockView(symbolMarket: currentSymbolMarket!)
-                    }
-                    
                 }
+                
             }
         }
     }
@@ -129,6 +101,57 @@ struct NavigtionBarView: View {
         for i in 0..<symbolMarketList.count {
             symbolMarketList[i].show = false
             symbolMarketList[i].isMaxZ = false
+        }
+    }
+}
+
+struct StockList: View {
+    @Binding var isShowingStockView: Bool
+    @Binding var canShowStockView: Bool
+    @Binding var currentSymbolMarket: SymbolMarket?
+    @ObservedObject var homeLogic: HomeLogic
+    var geoProxy: GeometryProxy
+    
+    var body: some View {
+        ZStack {
+            ScrollView(showsIndicators: false) {
+                ZStack {
+                    
+                    ForEach(homeLogic.symbolMarketList.indices) { index in
+                        GeometryReader { geo in
+                            StockCellView(
+                                show: self.$homeLogic.symbolMarketList[index].show,
+                                isMaxZ: self.$homeLogic.symbolMarketList[index].isMaxZ,
+                                isShowing: $isShowingStockView,
+                                currentSymbolMarket: $currentSymbolMarket,
+                                canShowStockView: $canShowStockView,
+                                symbolMarket: homeLogic.symbolMarketList[index]
+                            )
+                            .offset(x: 15, y: self.homeLogic.symbolMarketList[index].show ? -geo.frame(in: .global).minY + 90 + geoProxy.safeAreaInsets.top : 0)
+                            
+                        }
+                        .offset(x: 0, y: CGFloat(Int(index) * 155))
+                        .frame(maxHeight: 140)
+                        .zIndex(self.homeLogic.symbolMarketList[index].isMaxZ ? 1 : 0)
+                        .animation(.easeInOut)
+                    }
+                    
+                    
+                    VStack {
+                        Spacer()
+                        Color(.white)
+                            .frame(width: self.isShowingStockView ? screen.width : 0, height: self.isShowingStockView ? screen.height - 60 : 0, alignment: .center)
+                        
+                        Spacer()
+                    }
+                }
+            }
+            .disabled(isShowingStockView)
+            
+            if canShowStockView {
+                StockView(symbolMarket: currentSymbolMarket!)
+            }
+            
         }
     }
 }
