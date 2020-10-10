@@ -22,21 +22,20 @@ struct StockCardInfo: View {
                     .offset(x: 0, y: 15)
                 
                 VStack {
-                    ForEach(0 ..< 3) { item in
-                        StockCardInfoContentCell(show: $show)
-                    }
+                    StockCardInfoContentCell(show: $show, value: String(symbolMarket!.marketInfo!.volume), title: "Volume", imageName: "waveform.path.ecg")
+                    StockCardInfoContentCell(show: $show, value: "\(symbolMarket!.marketInfo!.high)", title: "High price", imageName: "arrow.up.right")
+                    StockCardInfoContentCell(show: $show, value: "\(symbolMarket!.marketInfo!.low)", title: "Low price", imageName: "arrow.down.right")
                 }
                 .offset(x: 0, y: self.show ? 80 : 0)
             }
             .frame(width: self.show ? screen.width - 40 : screen.width - 100, height: self.show ? 520 : 150)
             .opacity(self.show ? 1 : 0)
             
-            StockCardInfoHeaderView(title: "Market capitalization", info: formattingCapitalizationValue(), systemImageName: "waveform.path.ecg", color: #colorLiteral(red: 0.007843137255, green: 0.768627451, blue: 0.5843137255, alpha: 1), show: $show, translation: $dragTranslation, isDraging: $isDraging)
+            StockCardInfoHeaderView(title: "Market capitalization", info: formattingCapitalizationValue(), systemImageName: "dollarsign.circle", color: #colorLiteral(red: 0.007843137255, green: 0.768627451, blue: 0.5843137255, alpha: 1), show: $show, translation: $dragTranslation, isDraging: $isDraging)
                 .offset(y: self.show ? self.dragTranslation.height / 35 : 0)
         }
         .scaleEffect(self.isDraging ? (1 - self.dragTranslation.height / 4000) : 1)
         .offset(x: 0, y: self.show ? 0 : 320)
-        .animation(.spring(response: 0.33, dampingFraction: 0.49, blendDuration: 0))
     }
     
     private func formattingCapitalizationValue() -> String {
@@ -120,19 +119,22 @@ struct StockCardInfoHeaderView: View {
 
 struct StockCardInfoContentCell: View {
     @Binding var show: Bool
+    var value: String
+    var title: String
+    var imageName: String
     
     var body: some View {
         HStack {
-            Image(systemName: "dollarsign.circle")
+            Image(systemName: imageName)
                 .font(.system(size: 28, weight: .semibold))
                 .padding(18)
                 .background(RoundedRectangle(cornerRadius: 12, style: .continuous).foregroundColor(.white))
             Spacer()
             VStack(spacing: 8) {
-                Text("Market capitalization")
+                Text(title)
                     .font(.title3)
                 
-                Text("1,823 T")
+                Text(value)
                     .font(.title)
                     .fontWeight(.bold)
             }

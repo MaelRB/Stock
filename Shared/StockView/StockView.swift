@@ -23,7 +23,7 @@ struct StockView: View {
             
             StockCardInfo(show: $showCardInfo, symbolMarket: .constant(symbolMarket))
                 .offset(x: 0, y: self.isAppear ? -44 : 300)
-                .animation(.spring(response: 0.5, dampingFraction: 0.65, blendDuration: 0))
+                .animation(.spring(response: 0.4, dampingFraction: 0.70, blendDuration: 0))
         }
         .background(Color.white)
         .onAppear(perform: {

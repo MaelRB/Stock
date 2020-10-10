@@ -17,7 +17,7 @@ struct Home: View {
     var body: some View {
         GeometryReader { geoProxy in
             VStack {
-                NavigtionBarView(isShowing: $isShowingStockView, canShow: $canShowStockView, symbolMarketList: $homeLogic.symbolMarketList)
+                NavigationBarView(isShowing: $isShowingStockView, canShow: $canShowStockView, symbolMarketList: $homeLogic.symbolMarketList)
                     .animation(.easeInOut)
                 
                 if homeLogic.isFinishingLoading {
@@ -53,7 +53,7 @@ struct Stock: Identifiable {
 
 let stockData = [Stock(show: false), Stock(show: false), Stock(show: false)]
 
-struct NavigtionBarView: View {
+struct NavigationBarView: View {
     @Binding var isShowing: Bool
     @Binding var canShow: Bool
     @Binding var symbolMarketList: [SymbolMarket]
@@ -135,6 +135,7 @@ struct StockList: View {
                         .zIndex(self.homeLogic.symbolMarketList[index].isMaxZ ? 1 : 0)
                         .animation(.easeInOut)
                     }
+                    .padding(.top, 20)
                     
                     
                     VStack {

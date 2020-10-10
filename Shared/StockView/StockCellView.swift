@@ -71,7 +71,7 @@ struct StockCellView: View {
             self.isShowing.toggle()
             
             if self.canShowStockView == false {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
                     self.canShowStockView.toggle()
                 }
             } else {
