@@ -124,16 +124,35 @@ struct StockChart: View {
     }
     
     private func fetchNewStockPrice() {
+        switchToLoadingState()
+        DispatchQueue.main.async {
+            self.getStockPrice()
+        }
+    }
+    
+    private func switchToLoadingState() {
         guard show else { return }
         isLoading = true
         startTrim = false
-        DispatchQueue.main.async {
-            self.fetchStockPrice()
-        }
+    }
+    
+    private func switchToPresentationState(with priceList: [StockPrice]) {
+        self.stockPriceList = priceList
+        self.isLoading = false
+        self.startTrimingAfterDelay()
     }
     
     
     // Should be executed on the main queue
+    private func getStockPrice() {
+        if let priceList = symbolMarket.getPriceList(for: selectedRange) {
+            switchToPresentationState(with: priceList)
+        } else {
+            fetchStockPrice()
+        }
+        
+    }
+    
     private func fetchStockPrice() {
         chartService.fetchMarketChart(for: symbolMarket.symbolName, range: selectedRange) { (result, error) in
             if error != nil {
@@ -141,9 +160,8 @@ struct StockChart: View {
                 // To do : handle error
                 self.isLoading = false
             } else if let priceList = result {
-                self.isLoading = false
-                self.stockPriceList = priceList
-                self.startTrimingAfterDelay()
+                self.symbolMarket.setPriceList(with: priceList, for: selectedRange)
+                self.switchToPresentationState(with: priceList)
             }
         }
     }

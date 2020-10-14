@@ -12,11 +12,20 @@ struct SymbolMarket: Identifiable {
     var show: Bool = false
     var isMaxZ = false
     var symbolName: String
-    var stockPriceList: [StockPrice]?
     var marketInfo: MarketQuote?
     var logo: URL?
     
+    private let cache = Cache<ChartRange, [StockPrice]>()
+    
     func isComplete() ->Bool {
         return marketInfo != nil && logo != nil
+    }
+    
+    func getPriceList(for range: ChartRange) -> [StockPrice]? {
+        return cache[range]
+    }
+    
+    func setPriceList(with value: [StockPrice], for range: ChartRange) {
+        cache[range] = value
     }
 }
