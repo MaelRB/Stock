@@ -64,7 +64,7 @@ struct StockCellView: View {
                     .disabled(self.show)
                     
                     VStack(spacing: 15) {
-                        StockChart(symbol: symbolMarket.symbolName)
+                        StockChart(symbolMarket: symbolMarket, show: $show)
                             .foregroundColor(symbolMarket.marketInfo!.changePercent < 0 ? Color(#colorLiteral(red: 0.9999999404, green: 0.1764707565, blue: 0.3333333135, alpha: 1)) : Color(#colorLiteral(red: 0.007843137255, green: 0.768627451, blue: 0.5843137255, alpha: 1)))
                             .animation(.easeInOut)
                     }

@@ -8,12 +8,14 @@
 import SwiftUI
 
 struct StockChart: View {
-    var symbol: String
+    var symbolMarket: SymbolMarket
+    
     @State private var selectedRange: ChartRange = .daily
+    @Binding var show: Bool
     
     var chartService = ChartService()
-    var strokeColor = #colorLiteral(red: 0.007843137255, green: 0.768627451, blue: 0.5843137255, alpha: 1)
     
+    @State private var strokeColor = #colorLiteral(red: 0.007843137255, green: 0.768627451, blue: 0.5843137255, alpha: 1)
     @State private var stockPriceList: [StockPrice] = []
     @State private var isLoading = true
     @State private var startTrim = false
@@ -86,10 +88,15 @@ struct StockChart: View {
         }
         .onAppear(perform: {
             self.fetchNewStockPrice()
+            self.changeStrokeColor()
         })
         .animation(.easeInOut)
     
             
+    }
+    
+    private func changeStrokeColor() {
+        strokeColor = symbolMarket.marketInfo!.changePercent < 0 ? #colorLiteral(red: 0.9999999404, green: 0.1764707565, blue: 0.3333333135, alpha: 1) : #colorLiteral(red: 0.007843137255, green: 0.768627451, blue: 0.5843137255, alpha: 1)
     }
     
     private func getMin() -> CGFloat {
@@ -117,6 +124,7 @@ struct StockChart: View {
     }
     
     private func fetchNewStockPrice() {
+        guard show else { return }
         isLoading = true
         startTrim = false
         DispatchQueue.main.async {
@@ -127,7 +135,7 @@ struct StockChart: View {
     
     // Should be executed on the main queue
     private func fetchStockPrice() {
-        chartService.fetchMarketChart(for: symbol, range: selectedRange) { (result, error) in
+        chartService.fetchMarketChart(for: symbolMarket.symbolName, range: selectedRange) { (result, error) in
             if error != nil {
                 print(error?.localizedDescription as Any)
                 // To do : handle error
@@ -150,7 +158,7 @@ struct StockChart: View {
 
 struct StockChart_Previews: PreviewProvider {
     static var previews: some View {
-        StockChart(symbol: "appl")
+        StockChart(symbolMarket: defaultSymbolMarket, show: .constant(true))
     }
 }
 
