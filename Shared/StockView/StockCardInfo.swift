@@ -22,7 +22,7 @@ struct StockCardInfo: View {
                     .offset(x: 0, y: 15)
                 
                 VStack {
-                    StockCardInfoContentCell(show: $show, value: String(symbolMarket!.marketInfo!.volume), title: "Volume", imageName: "waveform.path.ecg")
+                    StockCardInfoContentCell(show: $show, value: String(symbolMarket!.marketInfo!.volume ?? 0), title: "Volume", imageName: "waveform.path.ecg")
                     StockCardInfoContentCell(show: $show, value: "\(symbolMarket!.marketInfo!.high)", title: "High price", imageName: "arrow.up.right")
                     StockCardInfoContentCell(show: $show, value: "\(symbolMarket!.marketInfo!.low)", title: "Low price", imageName: "arrow.down.right")
                 }

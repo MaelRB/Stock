@@ -16,7 +16,7 @@ struct StockCellView: View {
     @Binding var currentSymbolMarket: SymbolMarket?
     @Binding var canShowStockView: Bool
     var symbolMarket: SymbolMarket
-    @State private var selectedButton = 1
+    @State private var selectedRange: ChartRange = .daily
     
     var body: some View {
         ZStack {
@@ -64,54 +64,11 @@ struct StockCellView: View {
                     .disabled(self.show)
                     
                     VStack(spacing: 15) {
-                        StockChart(symbolMarket: symbolMarket)
+                        StockChart(symbol: symbolMarket.symbolName)
                             .foregroundColor(symbolMarket.marketInfo!.changePercent < 0 ? Color(#colorLiteral(red: 0.9999999404, green: 0.1764707565, blue: 0.3333333135, alpha: 1)) : Color(#colorLiteral(red: 0.007843137255, green: 0.768627451, blue: 0.5843137255, alpha: 1)))
                             .animation(.easeInOut)
-                        
-                        HStack(spacing: 20) {
-                            Button(action: {
-                                selectedButton = 1
-                            }, label: {
-                                Text("1D")
-                            })
-                            .buttonStyle(ChartButtonStyle(isSelected: selectedButton == 1))
-                            Button(action: {
-                                selectedButton = 2
-                            }, label: {
-                                Text("1W")
-                            })
-                            .buttonStyle(ChartButtonStyle(isSelected: selectedButton == 2))
-                            Button(action: {
-                                selectedButton = 3
-                            }, label: {
-                                Text("1M")
-                            })
-                            .buttonStyle(ChartButtonStyle(isSelected: selectedButton == 3))
-                            Button(action: {
-                                selectedButton = 4
-                            }, label: {
-                                Text("3M")
-                            })
-                            .buttonStyle(ChartButtonStyle(isSelected: selectedButton == 4))
-                            Button(action: {
-                                selectedButton = 5
-                            }, label: {
-                                Text("1Y")
-                            })
-                            .buttonStyle(ChartButtonStyle(isSelected: selectedButton == 5))
-                            Button(action: {
-                                selectedButton = 6
-                            }, label: {
-                                Text("ALL")
-                            })
-                            .buttonStyle(ChartButtonStyle(isSelected: selectedButton == 6))
-                        }
-                        .animation(show ? nil : .easeInOut)
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(.black)
-                        .padding(.vertical, 15)
-        
                     }
+                    .padding(.vertical, 15)
                     .frame(height: self.show ? 290 : 0)
                     .opacity(self.show ? 1 : 0)
                     

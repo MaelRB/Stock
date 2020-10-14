@@ -9,11 +9,23 @@ import Foundation
 import Network
 
 final class WebClient {
-    private var token = "pk_16a20865e8d0409aa46f7a6866294093"
+    private let token = "pk_16a20865e8d0409aa46f7a6866294093"
+    private let url = "https://cloud.iexapis.com/stable"
+    
+    private let sandboxToken = "Tpk_a19783743d834721ae3d35fabda57cc1"
+    private let sandboxUrl = "https://sandbox.iexapis.com/stable"
+    
+    private var baseToken: String
     private var baseUrl: String?
     
-    init(baseUrl: String) {
-        self.baseUrl = baseUrl
+    init(sandBox: Bool) {
+        if sandBox {
+            self.baseToken = sandboxToken
+            self.baseUrl = sandboxUrl
+        } else {
+            self.baseToken = token
+            self.baseUrl = url
+        }
     }
     
     func load(path: String, parameters: Param, completion: @escaping (Any?, RestError?) -> ()) -> URLSessionDataTask? {
@@ -26,7 +38,7 @@ final class WebClient {
 //        #endif
         
         var params = parameters
-        params["token"] = token
+        params["token"] = baseToken
         
         print("path \(path)")
         

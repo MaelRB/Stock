@@ -17,12 +17,12 @@ struct SymbolMarket: Identifiable {
     var logo: URL?
     
     func isComplete() ->Bool {
-        return stockPriceList != nil && marketInfo != nil && logo != nil
+        return marketInfo != nil && logo != nil
     }
 }
 
 final class StockServices {
-    let client = WebClient(baseUrl: "https://cloud.iexapis.com/stable")
+    let client = WebClient(sandBox: true)
     
     func fetchMarket(for symbol: String, completion: @escaping (SymbolMarket?) -> ()) {
         var symbolMarket = SymbolMarket(symbolName: symbol) {
@@ -42,15 +42,6 @@ final class StockServices {
             }
         }
         
-        fetchMarketChart(for: symbol) { (result, error) in
-            if error != nil {
-                print(error?.localizedDescription as Any)
-                // To do : handle error
-            } else if let list = result {
-                symbolMarket.stockPriceList = list
-            }
-        }
-        
         fetchLogo(for: symbol) { (result, error) in
             if error != nil {
                 print(error?.localizedDescription as Any)
@@ -58,23 +49,6 @@ final class StockServices {
             } else if let url = result {
                 symbolMarket.logo = url
             }
-        }
-    }
-    
-    @discardableResult
-    func fetchMarketChart(for symbol: String, completion: @escaping ([StockPrice]?, RestError?) -> ()) -> URLSessionDataTask? {
-        
-        let parameters: Param = [:]
-        
-        return client.load(path: "/stock/\(symbol)/intraday-prices", parameters: parameters) { result, error in
-            var stocks: [StockPrice]? = nil
-            if let data = result as? Data {
-                stocks = self.parseStockPrice(data)
-                if let list = stocks {
-                    stocks = self.removeUselessIntradayPrices(list)
-                }
-            }
-            completion(stocks, error)
         }
     }
     
@@ -141,17 +115,5 @@ final class StockServices {
             print(error)
             return nil
         }
-    }
-    
-    private func removeUselessIntradayPrices(_ list: [StockPrice]) -> [StockPrice] {
-        var copyList = list
-        copyList.removeAll {
-            if $0.average == nil {
-                return true
-            } else {
-                return $0.minute?.last! != "0" && $0.minute?.last! != "5"
-            }
-        }
-        return copyList
     }
 }

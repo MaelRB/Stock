@@ -12,9 +12,9 @@ struct MarketQuote: Codable {
     let latestPrice: CGFloat
     let changePercent: CGFloat
     let marketCap: Int
-    let volume: Int
-    let high: CGFloat
-    let low: CGFloat
+    let volume: Int?
+    let high: CGFloat?
+    let low: CGFloat?
 }
 
 enum QuoteKind: String {

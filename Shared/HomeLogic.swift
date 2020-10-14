@@ -48,7 +48,7 @@ class HomeLogic: ObservableObject {
     }
     
     private func checkIfAllSymbolAreLoads() {
-        isFinishingLoading = symbolMarketList.count == symbolList.count
+        return isFinishingLoading = symbolMarketList.count == symbolList.count
     }
 }
 
