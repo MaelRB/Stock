@@ -124,9 +124,11 @@ struct StockChart: View {
     }
     
     private func fetchNewStockPrice() {
-        switchToLoadingState()
-        DispatchQueue.main.async {
-            self.getStockPrice()
+        if show {
+            switchToLoadingState()
+            DispatchQueue.main.async {
+                self.getStockPrice()
+            }
         }
     }
     
