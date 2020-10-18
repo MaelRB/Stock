@@ -16,6 +16,7 @@ struct StockView: View {
         ZStack {
             VStack {
                 StockCellView(show: .constant(true), isMaxZ: .constant(true), isShowing: .constant(true), currentSymbolMarket: .constant(nil), canShowStockView: .constant(true), symbolMarket: symbolMarket)
+                    .padding(.horizontal, 20)
                 Spacer()
             }
             .blur(radius: showCardInfo ? 20 : 0)

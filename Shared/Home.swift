@@ -42,16 +42,19 @@ struct Home: View {
 
 struct Home_Previews: PreviewProvider {
     static var previews: some View {
-        Home()
+        let home = Home()
+        
+        home.homeLogic.symbolMarketList = [defaultSymbolMarket, defaultSymbolMarket, defaultSymbolMarket]
+        home.homeLogic.isFinishingLoading = true
+        
+        return Group {
+            home
+//            home
+//                .previewDevice(PreviewDevice(rawValue: "iPhone SE (2nd generation)"))
+        }
     }
 }
 
-struct Stock: Identifiable {
-    var id = UUID()
-    var show: Bool
-}
-
-let stockData = [Stock(show: false), Stock(show: false), Stock(show: false)]
 
 struct NavigationBarView: View {
     @Binding var isShowing: Bool
@@ -94,7 +97,6 @@ struct NavigationBarView: View {
             Divider()
                 .opacity(self.isShowing ? 0 : 1)
         }
-        
     }
     
     private func desactiveCard() {
@@ -113,46 +115,30 @@ struct StockList: View {
     var geoProxy: GeometryProxy
     
     var body: some View {
-        ZStack {
-            ScrollView(showsIndicators: false) {
-                ZStack {
-                    
-                    ForEach(homeLogic.symbolMarketList.indices) { index in
-                        GeometryReader { geo in
-                            StockCellView(
-                                show: self.$homeLogic.symbolMarketList[index].show,
-                                isMaxZ: self.$homeLogic.symbolMarketList[index].isMaxZ,
-                                isShowing: $isShowingStockView,
-                                currentSymbolMarket: $currentSymbolMarket,
-                                canShowStockView: $canShowStockView,
-                                symbolMarket: homeLogic.symbolMarketList[index]
-                            )
-                            .offset(x: 15, y: self.homeLogic.symbolMarketList[index].show ? -geo.frame(in: .global).minY + 90 + geoProxy.safeAreaInsets.top : 0)
-                            
-                        }
-                        .offset(x: 0, y: CGFloat(Int(index) * 155))
-                        .frame(maxHeight: 140)
-                        .zIndex(self.homeLogic.symbolMarketList[index].isMaxZ ? 1 : 0)
-                        .animation(.easeInOut)
-                    }
-                    .padding(.top, 20)
-                    
-                    
-                    VStack {
-                        Spacer()
-                        Color(.white)
-                            .frame(width: self.isShowingStockView ? screen.width : 0, height: self.isShowingStockView ? screen.height - 60 : 0, alignment: .center)
+        ScrollView(showsIndicators: false) {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 380), spacing: 20)]) {
+                ForEach(homeLogic.symbolMarketList.indices) { index in
+                    GeometryReader { geo in
+                        StockCellView(
+                            show: self.$homeLogic.symbolMarketList[index].show,
+                            isMaxZ: self.$homeLogic.symbolMarketList[index].isMaxZ,
+                            isShowing: $isShowingStockView,
+                            currentSymbolMarket: $currentSymbolMarket,
+                            canShowStockView: $canShowStockView,
+                            symbolMarket: homeLogic.symbolMarketList[index]
+                        )
+                        .offset(x: 0, y: self.homeLogic.symbolMarketList[index].show ? -geo.frame(in: .global).minY + 90 + geoProxy.safeAreaInsets.top : 0)
                         
-                        Spacer()
                     }
+                    .frame(height: 140)
+                    .zIndex(self.homeLogic.symbolMarketList[index].isMaxZ ? 2 : 0)
+                    .animation(.easeInOut)
                 }
             }
-            .disabled(isShowingStockView)
-            
-            if canShowStockView {
-                StockView(symbolMarket: currentSymbolMarket!)
-            }
-            
+            .padding(20)
+            .frame(maxWidth: .infinity)
         }
+        .disabled(isShowingStockView)
+            
     }
 }

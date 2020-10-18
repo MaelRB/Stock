@@ -19,24 +19,20 @@ struct StockCellView: View {
     @State private var selectedRange: ChartRange = .daily
     
     var body: some View {
-        ZStack {
-            
-            Color(lightColor)
-                .frame(width: screen.width - 30, height: self.show ? 390 : 130)
-                .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
-                .shadow(color: Color(lightColor), radius: 15, x: -10, y: -10)
-                .shadow(color: Color(darkColor), radius: 5, x: 10, y: 10)
-            
+        GeometryReader { bounds in
             VStack {
                 VStack(spacing: 20) {
                     HStack(spacing: 10) {
-                        LogoView(lightColor: lightColor, darkColor: darkColor, symbolMarket: symbolMarket)
-                            .padding(.leading, 10)
+                        LogoView(lightColor: lightColor, darkColor: darkColor, symbolMarket: symbolMarket, bounds: bounds)
+                            .padding(.leading, 20)
                         
                         CenterComponentView(symbolMarket: symbolMarket)
+                            .padding(.leading, 20)
+                        
+                        Spacer()
                         
                         RightComponentView(symbolMarket: symbolMarket)
-                            .padding(.trailing, 10)
+                            .padding(.trailing, 20)
                     }
                     .offset(x: 0, y: 12)
                     .onTapGesture {
@@ -64,7 +60,7 @@ struct StockCellView: View {
                     .disabled(self.show)
                     
                     VStack(spacing: 15) {
-                        StockChart(symbolMarket: symbolMarket, show: $show)
+                        StockChart(symbolMarket: symbolMarket, show: $isShowing)
                             .foregroundColor(symbolMarket.marketInfo!.changePercent < 0 ? Color(#colorLiteral(red: 0.9999999404, green: 0.1764707565, blue: 0.3333333135, alpha: 1)) : Color(#colorLiteral(red: 0.007843137255, green: 0.768627451, blue: 0.5843137255, alpha: 1)))
                             .animation(.easeInOut)
                     }
@@ -75,19 +71,25 @@ struct StockCellView: View {
                 }
                 .offset(x: 0, y: self.show ? 10 : 0)
             }
-            .padding(.horizontal, 20)
-            .frame(width: screen.width - 40, height: self.show ? 380 : 120)
+            .frame(width: bounds.size.width - 10, height: self.show ? 380 : 120)
             .background(Color(#colorLiteral(red: 0.9482057691, green: 0.9529708028, blue: 0.9658263326, alpha: 1)))
             .clipShape(RoundedRectangle(cornerRadius: 25, style: .continuous))
+            .frame(width: bounds.size.width, height: self.show ? 390 : 130)
+            .background(RoundedRectangle(cornerRadius: 30, style: .continuous)
+                            .foregroundColor(Color(lightColor))
+                            .shadow(color: Color(lightColor), radius: 15, x: -10, y: -10)
+                            .shadow(color: Color(darkColor), radius: 5, x: 10, y: 10)
+            )
+            .animation(.easeInOut)
         }
-        .animation(.easeInOut)
+        .frame(maxWidth: 370)
     }
 }
 
 struct StockCellView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            StockCellView(show: .constant(true), isMaxZ: .constant(true), isShowing: .constant(false), currentSymbolMarket: .constant(defaultSymbolMarket), canShowStockView: .constant(true), symbolMarket: defaultSymbolMarket)
+            StockCellView(show: .constant(false), isMaxZ: .constant(false), isShowing: .constant(false), currentSymbolMarket: .constant(defaultSymbolMarket), canShowStockView: .constant(false), symbolMarket: defaultSymbolMarket)
         }
     }
 }
@@ -97,11 +99,12 @@ struct LogoView: View {
     var lightColor: UIColor
     var darkColor: UIColor
     var symbolMarket: SymbolMarket
+    var bounds: GeometryProxy
     
     var body: some View {
         ZStack {
             Color(#colorLiteral(red: 0.9482057691, green: 0.9529708028, blue: 0.9658263326, alpha: 1))
-                .frame(width: screen.width * 0.15, height: screen.width * 0.15)
+                .frame(width: bounds.size.width * 0.15, height: bounds.size.width * 0.15)
                 .clipShape(Circle())
                 .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0.0, y: 0.0)
                 .shadow(color: Color(lightColor), radius: 4, x: -6, y: -6)
@@ -111,7 +114,7 @@ struct LogoView: View {
                 .renderingMode(.original)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .frame(width: screen.width * 0.12, height: screen.width * 0.12)
+                .frame(width: 340 * 0.12, height: 340 * 0.12)
                 .clipShape(Circle())
                 .blendMode(.multiply)
         }
@@ -135,13 +138,11 @@ struct CenterComponentView: View {
         VStack(alignment: .leading, spacing: 14) {
             Text(symbolMarket.marketInfo!.companyName)
                 .font(.system(size: 20, weight: .bold, design: .rounded))
-                .lineLimit(2)
+                .lineLimit(3)
             
             Text(symbolMarket.symbolName.uppercased())
                 .font(.callout)
         }
-        .frame(height: 90)
-        .frame(minWidth: screen.width * 0.35)
     }
 }
 
@@ -166,8 +167,6 @@ struct RightComponentView: View {
             }
             .foregroundColor(symbolMarket.marketInfo!.changePercent < 0 ? Color(#colorLiteral(red: 0.9999999404, green: 0.1764707565, blue: 0.3333333135, alpha: 1)) : Color(#colorLiteral(red: 0.007843137255, green: 0.768627451, blue: 0.5843137255, alpha: 1)))
         }
-        .frame(minWidth: screen.width * 0.25)
-        
     }
     
     private func roundNumber(_ number: CGFloat) -> CGFloat {

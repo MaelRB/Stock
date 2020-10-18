@@ -8,7 +8,7 @@
 import Foundation
 
 final class StockServices {
-    let client = WebClient(sandBox: true)
+    let client = WebClient(sandBox: false)
     
     func fetchMarket(for symbol: String, completion: @escaping (SymbolMarket?) -> ()) {
         var symbolMarket = SymbolMarket(symbolName: symbol) {
