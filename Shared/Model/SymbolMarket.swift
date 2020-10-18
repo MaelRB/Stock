@@ -10,7 +10,6 @@ import Foundation
 struct SymbolMarket: Identifiable {
     let id = UUID()
     var show: Bool = false
-    var isMaxZ = false
     var symbolName: String
     var marketInfo: MarketQuote?
     var logo: URL?

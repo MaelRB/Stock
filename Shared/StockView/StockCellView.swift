@@ -33,44 +33,19 @@ struct StockCellView: View {
                         RightComponentView(symbolMarket: symbolMarket)
                             .padding(.trailing, 20)
                     }
-                    .offset(x: 0, y: 12)
-                    .onTapGesture {
-                        
-                        self.currentSymbolMarket = symbolMarket
-                        self.show.toggle()
-                        self.canShowStockView.toggle()
-                        
-//                        self.isShowing.toggle()
-//
-//                        if self.canShowStockView == false {
-//                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-//                                self.canShowStockView.toggle()
-//                            }
-//                        } else {
-//                            self.canShowStockView.toggle()
-//                        }
-//
-//                        if self.isMaxZ == false {
-//                            self.isMaxZ.toggle()
-//                        } else {
-//                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-//                                self.isMaxZ.toggle()
-//                            }
-//                        }
-                    }
-                    .disabled(self.show)
+                    .animation(.easeInOut)
+                    .frame(height: 85)
+                    .padding(.top, 20)
                     
                     VStack(spacing: 15) {
                         StockChart(symbolMarket: symbolMarket, show: $show)
                             .foregroundColor(symbolMarket.marketInfo!.changePercent < 0 ? Color(#colorLiteral(red: 0.9999999404, green: 0.1764707565, blue: 0.3333333135, alpha: 1)) : Color(#colorLiteral(red: 0.007843137255, green: 0.768627451, blue: 0.5843137255, alpha: 1)))
                             .animation(.easeInOut)
                     }
-                    .padding(.vertical, 15)
-                    .frame(height: self.show ? 290 : 0)
+                    .frame(height: self.show ? 260 : 0)
                     .opacity(self.show ? 1 : 0)
                     
                 }
-                .offset(x: 0, y: self.show ? 10 : 0)
             }
             .frame(width: bounds.size.width - 10, height: self.show ? 380 : 120)
             .background(Color(#colorLiteral(red: 0.9482057691, green: 0.9529708028, blue: 0.9658263326, alpha: 1)))
@@ -81,7 +56,6 @@ struct StockCellView: View {
                             .shadow(color: Color(lightColor), radius: 15, x: -10, y: -10)
                             .shadow(color: Color(darkColor), radius: 5, x: 10, y: 10)
             )
-            .animation(.easeInOut)
         }
         .frame(maxWidth: 370)
     }
@@ -90,7 +64,7 @@ struct StockCellView: View {
 struct StockCellView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            StockCellView(show: .constant(false), currentSymbolMarket: .constant(defaultSymbolMarket), canShowStockView: .constant(false), symbolMarket: defaultSymbolMarket)
+            StockCellView(show: .constant(true), currentSymbolMarket: .constant(defaultSymbolMarket), canShowStockView: .constant(false), symbolMarket: defaultSymbolMarket)
         }
     }
 }

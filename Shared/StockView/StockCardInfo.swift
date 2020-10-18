@@ -23,8 +23,8 @@ struct StockCardInfo: View {
                 
                 VStack {
                     StockCardInfoContentCell(show: $show, value: String(symbolMarket!.marketInfo!.volume ?? 0), title: "Volume", imageName: "waveform.path.ecg")
-                    StockCardInfoContentCell(show: $show, value: "\(symbolMarket!.marketInfo!.high)", title: "High price", imageName: "arrow.up.right")
-                    StockCardInfoContentCell(show: $show, value: "\(symbolMarket!.marketInfo!.low)", title: "Low price", imageName: "arrow.down.right")
+                    StockCardInfoContentCell(show: $show, value: "\(symbolMarket!.marketInfo!.high ?? 0)", title: "High price", imageName: "arrow.up.right")
+                    StockCardInfoContentCell(show: $show, value: "\(symbolMarket!.marketInfo!.low ?? 0)", title: "Low price", imageName: "arrow.down.right")
                 }
                 .offset(x: 0, y: self.show ? 80 : 0)
             }
@@ -34,6 +34,7 @@ struct StockCardInfo: View {
             StockCardInfoHeaderView(title: "Market capitalization", info: formattingCapitalizationValue(), systemImageName: "dollarsign.circle", color: #colorLiteral(red: 0.007843137255, green: 0.768627451, blue: 0.5843137255, alpha: 1), show: $show, translation: $dragTranslation, isDraging: $isDraging)
                 .offset(y: self.show ? self.dragTranslation.height / 35 : 0)
         }
+        .frame(maxWidth: 370)
         .scaleEffect(self.isDraging ? (1 - self.dragTranslation.height / 4000) : 1)
         .offset(x: 0, y: self.show ? 0 : 320)
     }

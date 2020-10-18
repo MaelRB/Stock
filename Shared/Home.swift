@@ -10,26 +10,30 @@ import Lottie
 
 struct Home: View {
     @State private var isShowingStockView = false
-    @State private var currentSymbolMarket: SymbolMarket? = nil
+    @State private var currentSymbolMarket: SymbolMarket? = defaultSymbolMarket
+    @State private var showCardInfo = false
     @ObservedObject var homeLogic = HomeLogic()
     
     var body: some View {
         GeometryReader { geoProxy in
             VStack {
-                NavigationBarView(isShowing: $isShowingStockView, symbolMarketList: $homeLogic.symbolMarketList)
+                NavigationBarView(isShowing: $isShowingStockView, symbolMarketList: $homeLogic.symbolMarketList, showCardInfo: $showCardInfo)
                     .animation(.easeInOut)
                 
                 if homeLogic.isFinishingLoading {
-                    StockList(isShowingStockView: $isShowingStockView, currentSymbolMarket: $currentSymbolMarket, homeLogic: homeLogic, geoProxy: geoProxy)
-                } else {
-                    VStack {
-                        Spacer()
-                        LottieView(fileName: "loading")
-                            .frame(width: 200, height: 200)
-                        Spacer()
+                    ZStack {
+                        StockList(isShowingStockView: $isShowingStockView, currentSymbolMarket: $currentSymbolMarket, homeLogic: homeLogic, geoProxy: geoProxy)
+                            .blur(radius: showCardInfo ? 20 : 0)
+                            .animation(.linear)
+                        
+                        StockCardInfo(show: $showCardInfo, symbolMarket: $currentSymbolMarket)
+                            .offset(x: 0, y: self.isShowingStockView ? -44 : 300)
+                            .animation(.spring(response: 0.4, dampingFraction: 0.70, blendDuration: 0))
                     }
+                    
+                } else {
+                    LoadingView()
                 }
-                
             }
         }
     }
@@ -58,6 +62,7 @@ struct Home_Previews: PreviewProvider {
 struct NavigationBarView: View {
     @Binding var isShowing: Bool
     @Binding var symbolMarketList: [SymbolMarket]
+    @Binding var showCardInfo: Bool
     
     var body: some View {
         VStack {
@@ -75,6 +80,9 @@ struct NavigationBarView: View {
                 
                 HStack {
                     Button(action: {
+                        if showCardInfo {
+                            self.showCardInfo.toggle()
+                        }
                         self.isShowing.toggle()
                         desactiveCard()
                     }, label: {
@@ -99,7 +107,6 @@ struct NavigationBarView: View {
     private func desactiveCard() {
         for i in 0..<symbolMarketList.count {
             symbolMarketList[i].show = false
-            symbolMarketList[i].isMaxZ = false
         }
     }
 }
@@ -107,6 +114,7 @@ struct NavigationBarView: View {
 struct StockList: View {
     @Binding var isShowingStockView: Bool
     @Binding var currentSymbolMarket: SymbolMarket?
+    @State private  var indexWithMaxZ: Int = 0
     @ObservedObject var homeLogic: HomeLogic
     var geoProxy: GeometryProxy
     
@@ -124,8 +132,16 @@ struct StockList: View {
                         .offset(x: 0, y: self.homeLogic.symbolMarketList[index].show ? -geo.frame(in: .global).minY + 90 + geoProxy.safeAreaInsets.top : 0)
                     }
                     .frame(height: 140)
+                    .zIndex(indexWithMaxZ == index ? 1 : 0)
                     .opacity(self.homeLogic.symbolMarketList[index].show ? 1 : self.isShowingStockView ? 0 : 1)
                     .animation(.easeInOut)
+                    .onTapGesture {
+                        self.currentSymbolMarket = homeLogic.symbolMarketList[index]
+                        self.homeLogic.symbolMarketList[index].show.toggle()
+                        self.isShowingStockView.toggle()
+                        self.indexWithMaxZ = index
+                    }
+                    .disabled(self.isShowingStockView)
                 }
             }
             .padding(20)
@@ -133,5 +149,16 @@ struct StockList: View {
         }
         .disabled(isShowingStockView)
             
+    }
+}
+
+struct LoadingView: View {
+    var body: some View {
+        VStack {
+            Spacer()
+            LottieView(fileName: "loading")
+                .frame(width: 200, height: 200)
+            Spacer()
+        }
     }
 }
