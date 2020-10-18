@@ -15,7 +15,7 @@ struct StockView: View {
     var body: some View {
         ZStack {
             VStack {
-                StockCellView(show: .constant(true), isMaxZ: .constant(true), isShowing: .constant(true), currentSymbolMarket: .constant(nil), canShowStockView: .constant(true), symbolMarket: symbolMarket)
+                StockCellView(show: .constant(true), currentSymbolMarket: .constant(nil), canShowStockView: .constant(true), symbolMarket: symbolMarket)
                     .padding(.horizontal, 20)
                 Spacer()
             }

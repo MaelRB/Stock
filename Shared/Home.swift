@@ -10,18 +10,17 @@ import Lottie
 
 struct Home: View {
     @State private var isShowingStockView = false
-    @State private var canShowStockView = false
     @State private var currentSymbolMarket: SymbolMarket? = nil
     @ObservedObject var homeLogic = HomeLogic()
     
     var body: some View {
         GeometryReader { geoProxy in
             VStack {
-                NavigationBarView(isShowing: $isShowingStockView, canShow: $canShowStockView, symbolMarketList: $homeLogic.symbolMarketList)
+                NavigationBarView(isShowing: $isShowingStockView, symbolMarketList: $homeLogic.symbolMarketList)
                     .animation(.easeInOut)
                 
                 if homeLogic.isFinishingLoading {
-                    StockList(isShowingStockView: $isShowingStockView, canShowStockView: $canShowStockView, currentSymbolMarket: $currentSymbolMarket, homeLogic: homeLogic, geoProxy: geoProxy)
+                    StockList(isShowingStockView: $isShowingStockView, currentSymbolMarket: $currentSymbolMarket, homeLogic: homeLogic, geoProxy: geoProxy)
                 } else {
                     VStack {
                         Spacer()
@@ -58,7 +57,6 @@ struct Home_Previews: PreviewProvider {
 
 struct NavigationBarView: View {
     @Binding var isShowing: Bool
-    @Binding var canShow: Bool
     @Binding var symbolMarketList: [SymbolMarket]
     
     var body: some View {
@@ -78,7 +76,6 @@ struct NavigationBarView: View {
                 HStack {
                     Button(action: {
                         self.isShowing.toggle()
-                        self.canShow.toggle()
                         desactiveCard()
                     }, label: {
                         Image(systemName: "arrow.backward")
@@ -109,7 +106,6 @@ struct NavigationBarView: View {
 
 struct StockList: View {
     @Binding var isShowingStockView: Bool
-    @Binding var canShowStockView: Bool
     @Binding var currentSymbolMarket: SymbolMarket?
     @ObservedObject var homeLogic: HomeLogic
     var geoProxy: GeometryProxy
@@ -121,17 +117,14 @@ struct StockList: View {
                     GeometryReader { geo in
                         StockCellView(
                             show: self.$homeLogic.symbolMarketList[index].show,
-                            isMaxZ: self.$homeLogic.symbolMarketList[index].isMaxZ,
-                            isShowing: $isShowingStockView,
                             currentSymbolMarket: $currentSymbolMarket,
-                            canShowStockView: $canShowStockView,
+                            canShowStockView: $isShowingStockView,
                             symbolMarket: homeLogic.symbolMarketList[index]
                         )
                         .offset(x: 0, y: self.homeLogic.symbolMarketList[index].show ? -geo.frame(in: .global).minY + 90 + geoProxy.safeAreaInsets.top : 0)
-                        
                     }
                     .frame(height: 140)
-                    .zIndex(self.homeLogic.symbolMarketList[index].isMaxZ ? 2 : 0)
+                    .opacity(self.homeLogic.symbolMarketList[index].show ? 1 : self.isShowingStockView ? 0 : 1)
                     .animation(.easeInOut)
                 }
             }

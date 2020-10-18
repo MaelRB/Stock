@@ -10,9 +10,8 @@ import SwiftUI
 struct StockCellView: View {
     var lightColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
     var darkColor = #colorLiteral(red: 0.8823529412, green: 0.8941176471, blue: 0.9215686275, alpha: 1)
+    
     @Binding var show: Bool
-    @Binding var isMaxZ: Bool
-    @Binding var isShowing: Bool
     @Binding var currentSymbolMarket: SymbolMarket?
     @Binding var canShowStockView: Bool
     var symbolMarket: SymbolMarket
@@ -39,28 +38,30 @@ struct StockCellView: View {
                         
                         self.currentSymbolMarket = symbolMarket
                         self.show.toggle()
-                        self.isShowing.toggle()
+                        self.canShowStockView.toggle()
                         
-                        if self.canShowStockView == false {
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                                self.canShowStockView.toggle()
-                            }
-                        } else {
-                            self.canShowStockView.toggle()
-                        }
-                        
-                        if self.isMaxZ == false {
-                            self.isMaxZ.toggle()
-                        } else {
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                                self.isMaxZ.toggle()
-                            }
-                        }
+//                        self.isShowing.toggle()
+//
+//                        if self.canShowStockView == false {
+//                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+//                                self.canShowStockView.toggle()
+//                            }
+//                        } else {
+//                            self.canShowStockView.toggle()
+//                        }
+//
+//                        if self.isMaxZ == false {
+//                            self.isMaxZ.toggle()
+//                        } else {
+//                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+//                                self.isMaxZ.toggle()
+//                            }
+//                        }
                     }
                     .disabled(self.show)
                     
                     VStack(spacing: 15) {
-                        StockChart(symbolMarket: symbolMarket, show: $isShowing)
+                        StockChart(symbolMarket: symbolMarket, show: $show)
                             .foregroundColor(symbolMarket.marketInfo!.changePercent < 0 ? Color(#colorLiteral(red: 0.9999999404, green: 0.1764707565, blue: 0.3333333135, alpha: 1)) : Color(#colorLiteral(red: 0.007843137255, green: 0.768627451, blue: 0.5843137255, alpha: 1)))
                             .animation(.easeInOut)
                     }
@@ -89,7 +90,7 @@ struct StockCellView: View {
 struct StockCellView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            StockCellView(show: .constant(false), isMaxZ: .constant(false), isShowing: .constant(false), currentSymbolMarket: .constant(defaultSymbolMarket), canShowStockView: .constant(false), symbolMarket: defaultSymbolMarket)
+            StockCellView(show: .constant(false), currentSymbolMarket: .constant(defaultSymbolMarket), canShowStockView: .constant(false), symbolMarket: defaultSymbolMarket)
         }
     }
 }
