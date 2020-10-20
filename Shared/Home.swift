@@ -14,25 +14,32 @@ struct Home: View {
     @State private var showCardInfo = false
     @ObservedObject var homeLogic = HomeLogic()
     
+    @State private var isAppear = false
+    
     var body: some View {
         GeometryReader { geoProxy in
             VStack {
                 NavigationBarView(isShowing: $isShowingStockView, symbolMarketList: $homeLogic.symbolMarketList, showCardInfo: $showCardInfo)
                     .animation(.easeInOut)
                 
-                if homeLogic.isFinishingLoading {
+                if homeLogic.isfinishLoadingAfterDelay {
                     ZStack {
                         StockList(isShowingStockView: $isShowingStockView, currentSymbolMarket: $currentSymbolMarket, homeLogic: homeLogic, geoProxy: geoProxy)
                             .blur(radius: showCardInfo ? 20 : 0)
-                            .animation(.linear)
+                            .opacity(self.isAppear ? 1 : 0)
+                            .animation(.linear(duration: 0.2))
                         
                         StockCardInfo(show: $showCardInfo, symbolMarket: $currentSymbolMarket)
                             .offset(x: 0, y: self.isShowingStockView ? -44 : 300)
                             .animation(.spring(response: 0.4, dampingFraction: 0.70, blendDuration: 0))
                     }
-                    
+                    .onAppear(perform: {
+                        self.isAppear = true
+                    })
                 } else {
                     LoadingView()
+                        .opacity(self.homeLogic.isFinishingLoading ? 0 : 1)
+                        .animation(.linear(duration: 0.2))
                 }
             }
         }

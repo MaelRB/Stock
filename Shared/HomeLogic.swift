@@ -13,13 +13,23 @@ class HomeLogic: ObservableObject {
             self.checkIfAllSymbolAreLoads()
         }
     }
-    var isFinishingLoading = false
+    var isFinishingLoading = false {
+        didSet {
+            if isFinishingLoading {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                    self.isfinishLoadingAfterDelay = true
+                }
+            }
+        }
+    }
+    
+    @Published var isfinishLoadingAfterDelay = false
     
     private var symbolList = [String]()
     
     init() {
 //        loadSymbol() / For now I will used hard coded values since I have not create a way to follow a symbol
-        symbolList = ["aapl", "tsla", "dis", "msft", "twtr"]
+        symbolList = ["aapl", "tsla", "dis", "msft"]
         fetchDataForSymbols()
     }
     
@@ -48,7 +58,7 @@ class HomeLogic: ObservableObject {
     }
     
     private func checkIfAllSymbolAreLoads() {
-        return isFinishingLoading = symbolMarketList.count == symbolList.count
+        isFinishingLoading = symbolMarketList.count == symbolList.count
     }
 }
 
