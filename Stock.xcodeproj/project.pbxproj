@@ -3,13 +3,14 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		00095C9132E0F759055F3940 /* Pods_Stock__macOS_.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F29EC83CA76549D30DC7522 /* Pods_Stock__macOS_.framework */; };
 		8A0B0F1C253F3C70001F5A96 /* VisualEffectBlur.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0B0F1B253F3C70001F5A96 /* VisualEffectBlur.swift */; };
 		8A0B0F1D253F3C70001F5A96 /* VisualEffectBlur.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0B0F1B253F3C70001F5A96 /* VisualEffectBlur.swift */; };
+		8A0B0F25253F4BCD001F5A96 /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = 8A0B0F24253F4BCD001F5A96 /* Introspect */; };
 		8A0E3DC325239713003220DA /* StockPrice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0E3DC225239713003220DA /* StockPrice.swift */; };
 		8A0E3DC9252397E3003220DA /* RestError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0E3DC8252397E2003220DA /* RestError.swift */; };
 		8A0E3DCD252398AC003220DA /* WebClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0E3DCC252398AC003220DA /* WebClient.swift */; };
@@ -87,6 +88,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DB08B181D7284D218BDC6168 /* Pods_Stock__iOS_.framework in Frameworks */,
+				8A0B0F25253F4BCD001F5A96 /* Introspect in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -238,6 +240,9 @@
 			dependencies = (
 			);
 			name = "Stock (iOS)";
+			packageProductDependencies = (
+				8A0B0F24253F4BCD001F5A96 /* Introspect */,
+			);
 			productName = "Stock (iOS)";
 			productReference = 8AA0EC4C251F99D400B1F5A2 /* Stock.app */;
 			productType = "com.apple.product-type.application";
@@ -287,6 +292,9 @@
 				Base,
 			);
 			mainGroup = 8AA0EC3F251F99CF00B1F5A2;
+			packageReferences = (
+				8A0B0F23253F4BCD001F5A96 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
+			);
 			productRefGroup = 8AA0EC4D251F99D400B1F5A2 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -686,6 +694,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		8A0B0F23253F4BCD001F5A96 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/siteline/SwiftUI-Introspect";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8A0B0F24253F4BCD001F5A96 /* Introspect */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8A0B0F23253F4BCD001F5A96 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */;
+			productName = Introspect;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 8AA0EC40251F99CF00B1F5A2 /* Project object */;
 }

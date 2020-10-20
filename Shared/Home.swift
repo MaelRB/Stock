@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Lottie
+import Introspect
 
 struct Home: View {
     @State private var isShowingStockView = false
@@ -55,6 +56,15 @@ struct Home: View {
                     VStack {
                         HStack(spacing: 20) {
                             TextField("Search", text: $userQuery)
+                                .introspectTextField { textField in
+                                    if showSearch {
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                            textField.becomeFirstResponder()
+                                        }
+                                    } else {
+                                        textField.resignFirstResponder()
+                                    }
+                                }
                                 .padding(8)
                                 .background(RoundedRectangle(cornerRadius: 10, style: .continuous).foregroundColor(.white))
                                 .padding(.leading, 20)
