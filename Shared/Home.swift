@@ -12,35 +12,75 @@ struct Home: View {
     @State private var isShowingStockView = false
     @State private var currentSymbolMarket: SymbolMarket? = defaultSymbolMarket
     @State private var showCardInfo = false
+    @State private var showSearch = false
     @ObservedObject var homeLogic = HomeLogic()
     
     @State private var isAppear = false
+    @State private var userQuery: String = ""
     
     var body: some View {
         GeometryReader { geoProxy in
-            VStack {
-                NavigationBarView(isShowing: $isShowingStockView, symbolMarketList: $homeLogic.symbolMarketList, showCardInfo: $showCardInfo)
-                    .animation(.easeInOut)
-                
-                if homeLogic.isfinishLoadingAfterDelay {
-                    ZStack {
-                        StockList(isShowingStockView: $isShowingStockView, currentSymbolMarket: $currentSymbolMarket, homeLogic: homeLogic, geoProxy: geoProxy)
-                            .blur(radius: showCardInfo ? 20 : 0)
-                            .opacity(self.isAppear ? 1 : 0)
+            ZStack {
+                VStack {
+                    NavigationBarView(isShowing: $isShowingStockView, symbolMarketList: $homeLogic.symbolMarketList, showCardInfo: $showCardInfo, showSearch: $showSearch)
+                        .animation(.easeInOut)
+                    
+                    if homeLogic.isfinishLoadingAfterDelay {
+                        ZStack {
+                            StockList(isShowingStockView: $isShowingStockView, currentSymbolMarket: $currentSymbolMarket, homeLogic: homeLogic, geoProxy: geoProxy)
+                                .blur(radius: showCardInfo ? 20 : 0)
+                                .opacity(self.isAppear ? 1 : 0)
+                                .animation(.linear(duration: 0.2))
+                            
+                            StockCardInfo(show: $showCardInfo, symbolMarket: $currentSymbolMarket)
+                                .offset(x: 0, y: self.isShowingStockView ? -44 : 300)
+                                .animation(.spring(response: 0.4, dampingFraction: 0.70, blendDuration: 0))
+                        }
+                        .onAppear(perform: {
+                            self.isAppear = true
+                        })
+                    } else {
+                        LoadingView()
+                            .opacity(self.homeLogic.isFinishingLoading ? 0 : 1)
                             .animation(.linear(duration: 0.2))
-                        
-                        StockCardInfo(show: $showCardInfo, symbolMarket: $currentSymbolMarket)
-                            .offset(x: 0, y: self.isShowingStockView ? -44 : 300)
-                            .animation(.spring(response: 0.4, dampingFraction: 0.70, blendDuration: 0))
                     }
-                    .onAppear(perform: {
-                        self.isAppear = true
-                    })
-                } else {
-                    LoadingView()
-                        .opacity(self.homeLogic.isFinishingLoading ? 0 : 1)
-                        .animation(.linear(duration: 0.2))
                 }
+                
+                ZStack {
+                    VisualEffectBlur(blurStyle: .systemUltraThinMaterial)
+                        .frame(maxHeight: .infinity)
+                        .edgesIgnoringSafeArea(.all)
+                        .opacity(showSearch ? 0.95 : 0)
+
+                    VStack {
+                        HStack(spacing: 20) {
+                            TextField("Search", text: $userQuery)
+                                .padding(8)
+                                .background(RoundedRectangle(cornerRadius: 10, style: .continuous).foregroundColor(.white))
+                                .padding(.leading, 20)
+                                
+                            
+                            Button(action: {
+                                showSearch.toggle()
+                            }, label: {
+                                Image(systemName: "xmark")
+                                    .font(.system(size: 16, weight: .semibold, design: .rounded))
+                                    .foregroundColor(.primary)
+                                
+                            })
+                            .buttonStyle(SearchButtonStyle())
+                            .padding(.trailing, 20)
+                        }
+                        .padding(.top)
+                        .opacity(showSearch ? 1 : 0)
+                        .scaleEffect(CGSize(width: showSearch ? 1 : 1.4, height: showSearch ? 1 : 1.7))
+                        .offset(x: 0, y: showSearch ? 0 : 50)
+                        Spacer()
+                    }
+                    
+                }
+                .animation(.easeInOut)
+            
             }
         }
     }
@@ -70,41 +110,57 @@ struct NavigationBarView: View {
     @Binding var isShowing: Bool
     @Binding var symbolMarketList: [SymbolMarket]
     @Binding var showCardInfo: Bool
+    @Binding var showSearch: Bool
     
     var body: some View {
         VStack {
-            ZStack {
-                HStack {
-                    Text("Stock")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .padding()
-                        .opacity(self.isShowing ? 0 : 1)
-                        .offset(x: self.isShowing ? -100 : 0, y: 0)
+            HStack {
+                ZStack {
+                    HStack {
+                        Text("Stock")
+                            .font(.largeTitle)
+                            .fontWeight(.bold)
+                            .padding()
+                            .opacity(self.isShowing ? 0 : 1)
+                            .offset(x: self.isShowing ? -100 : 0, y: 0)
+                        
+                        Spacer()
+                    }
                     
-                    Spacer()
+                    HStack {
+                        Button(action: {
+                            if showCardInfo {
+                                self.showCardInfo.toggle()
+                            }
+                            self.isShowing.toggle()
+                            desactiveCard()
+                        }, label: {
+                            Image(systemName: "arrow.backward")
+                                .foregroundColor(Color(#colorLiteral(red: 0.007843137255, green: 0.768627451, blue: 0.5843137255, alpha: 1)))
+                                .font(.system(size: 22, weight: .bold, design: .rounded))
+                                .opacity(self.isShowing ? 1 : 0)
+                                .offset(x: self.isShowing ? 0 : -100, y: 0)
+                                .padding(.horizontal)
+                                .padding(.top)
+                        })
+                        
+                        Spacer()
+                        
+                    }
                 }
                 
-                HStack {
-                    Button(action: {
-                        if showCardInfo {
-                            self.showCardInfo.toggle()
-                        }
-                        self.isShowing.toggle()
-                        desactiveCard()
-                    }, label: {
-                        Image(systemName: "arrow.backward")
-                            .foregroundColor(Color(#colorLiteral(red: 0.007843137255, green: 0.768627451, blue: 0.5843137255, alpha: 1)))
-                            .font(.system(size: 22, weight: .bold, design: .rounded))
-                            .opacity(self.isShowing ? 1 : 0)
-                            .offset(x: self.isShowing ? 0 : -100, y: 0)
-                            .padding(.horizontal)
-                            .padding(.top)
-                    })
-                    
-                    Spacer()
-                    
-                }
+                Button(action: {
+                    showSearch.toggle()
+                }, label: {
+                    Image(systemName: "magnifyingglass")
+                        .font(.system(size: 16, weight: .semibold, design: .rounded))
+                        .foregroundColor(.primary)
+                        
+                })
+                .buttonStyle(SearchButtonStyle())
+                .padding(.trailing, 20)
+                .offset(x: self.isShowing ? 100 : 0, y: 0)
+                
             }
             Divider()
                 .opacity(self.isShowing ? 0 : 1)
@@ -169,3 +225,18 @@ struct LoadingView: View {
         }
     }
 }
+
+struct SearchButtonStyle: ButtonStyle {
+    
+    func makeBody(configuration: Self.Configuration) -> some View {
+        return configuration.label
+            .padding(7)
+            .background(Circle().foregroundColor(Color(#colorLiteral(red: 0.8823529412, green: 0.8941176471, blue: 0.9215686275, alpha: 1))))
+            .padding(3)
+            .background(Circle().foregroundColor(Color(#colorLiteral(red: 1, green: 1, blue: 1, alpha: 1))))
+            .shadow(color: Color(#colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)), radius: 15, x: -10, y: -10)
+            .shadow(color: Color(#colorLiteral(red: 0.8823529412, green: 0.8941176471, blue: 0.9215686275, alpha: 1)), radius: 5, x: 10, y: 10)
+            .scaleEffect(configuration.isPressed ? 0.9 : 1)
+    }
+}
+

@@ -152,16 +152,4 @@ struct RightComponentView: View {
 
 }
 
-struct ChartButtonStyle: ButtonStyle {
-    
-    var isSelected: Bool
 
-    func makeBody(configuration: Self.Configuration) -> some View {
-        return configuration.label
-            .foregroundColor(isSelected ? .white : .black)
-            .padding(6)
-            .background(RoundedRectangle(cornerRadius: 10, style: .continuous)
-                            .foregroundColor(isSelected ? Color(#colorLiteral(red: 0.007843137255, green: 0.768627451, blue: 0.5843137255, alpha: 1)) : .clear))
-        
-    }
-}

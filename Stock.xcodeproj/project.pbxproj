@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		00095C9132E0F759055F3940 /* Pods_Stock__macOS_.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F29EC83CA76549D30DC7522 /* Pods_Stock__macOS_.framework */; };
+		8A0B0F1C253F3C70001F5A96 /* VisualEffectBlur.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0B0F1B253F3C70001F5A96 /* VisualEffectBlur.swift */; };
+		8A0B0F1D253F3C70001F5A96 /* VisualEffectBlur.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0B0F1B253F3C70001F5A96 /* VisualEffectBlur.swift */; };
 		8A0E3DC325239713003220DA /* StockPrice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0E3DC225239713003220DA /* StockPrice.swift */; };
 		8A0E3DC9252397E3003220DA /* RestError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0E3DC8252397E2003220DA /* RestError.swift */; };
 		8A0E3DCD252398AC003220DA /* WebClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0E3DCC252398AC003220DA /* WebClient.swift */; };
@@ -47,6 +49,7 @@
 		2B7893861E929C08C7C1977F /* Pods-Stock (macOS).debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stock (macOS).debug.xcconfig"; path = "Target Support Files/Pods-Stock (macOS)/Pods-Stock (macOS).debug.xcconfig"; sourceTree = "<group>"; };
 		7BC455BDCCD878E90A1AFC7E /* Pods-Stock (macOS).release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stock (macOS).release.xcconfig"; path = "Target Support Files/Pods-Stock (macOS)/Pods-Stock (macOS).release.xcconfig"; sourceTree = "<group>"; };
 		7F29EC83CA76549D30DC7522 /* Pods_Stock__macOS_.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Stock__macOS_.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8A0B0F1B253F3C70001F5A96 /* VisualEffectBlur.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualEffectBlur.swift; sourceTree = "<group>"; };
 		8A0E3DC225239713003220DA /* StockPrice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StockPrice.swift; sourceTree = "<group>"; };
 		8A0E3DC8252397E2003220DA /* RestError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestError.swift; sourceTree = "<group>"; };
 		8A0E3DCC252398AC003220DA /* WebClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebClient.swift; sourceTree = "<group>"; };
@@ -154,6 +157,7 @@
 				8A8F19962524F47800A1704B /* UserDefaultExtension.swift */,
 				8A8F198D2524F39600A1704B /* HomeLogic.swift */,
 				8AA0EC77251F9AC000B1F5A2 /* Home.swift */,
+				8A0B0F1B253F3C70001F5A96 /* VisualEffectBlur.swift */,
 				8AB739FC252F7F2600AE39DB /* LottieView.swift */,
 				8AB739F6252F7EDD00AE39DB /* Lottie */,
 				8AA0EC47251F99D400B1F5A2 /* Assets.xcassets */,
@@ -415,6 +419,7 @@
 				8A0E3DD125239988003220DA /* UrlExtension.swift in Sources */,
 				8AA0EC6E251F9A2700B1F5A2 /* Utilities.swift in Sources */,
 				8A8F198E2524F39600A1704B /* HomeLogic.swift in Sources */,
+				8A0B0F1C253F3C70001F5A96 /* VisualEffectBlur.swift in Sources */,
 				8AA0EC78251F9AC000B1F5A2 /* Home.swift in Sources */,
 				8A0E3DC9252397E3003220DA /* RestError.swift in Sources */,
 				8AA0EC69251F9A0C00B1F5A2 /* StockCardInfo.swift in Sources */,
@@ -431,6 +436,7 @@
 				8AA0EC74251F9A5400B1F5A2 /* StockCellView.swift in Sources */,
 				8A226B0A252471C40000B0C3 /* StockChart.swift in Sources */,
 				8AA0EC59251F99D400B1F5A2 /* StockApp.swift in Sources */,
+				8A0B0F1D253F3C70001F5A96 /* VisualEffectBlur.swift in Sources */,
 				8A876B3D253767AE00322F51 /* Cache.swift in Sources */,
 				8AA0EC6F251F9A2700B1F5A2 /* Utilities.swift in Sources */,
 				8AA0EC79251F9AC000B1F5A2 /* Home.swift in Sources */,
