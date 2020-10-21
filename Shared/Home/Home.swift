@@ -47,49 +47,7 @@ struct Home: View {
                     }
                 }
                 
-                ZStack {
-                    VisualEffectBlur(blurStyle: .systemUltraThinMaterial)
-                        .frame(maxHeight: .infinity)
-                        .edgesIgnoringSafeArea(.all)
-                        .opacity(showSearch ? 0.95 : 0)
-
-                    VStack {
-                        HStack(spacing: 20) {
-                            TextField("Search", text: $userQuery)
-                                .introspectTextField { textField in
-                                    if showSearch {
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                            textField.becomeFirstResponder()
-                                        }
-                                    } else {
-                                        textField.resignFirstResponder()
-                                    }
-                                }
-                                .padding(8)
-                                .background(RoundedRectangle(cornerRadius: 10, style: .continuous).foregroundColor(.white))
-                                .padding(.leading, 20)
-                                
-                            
-                            Button(action: {
-                                showSearch.toggle()
-                            }, label: {
-                                Image(systemName: "xmark")
-                                    .font(.system(size: 16, weight: .semibold, design: .rounded))
-                                    .foregroundColor(.primary)
-                                
-                            })
-                            .buttonStyle(SearchButtonStyle())
-                            .padding(.trailing, 20)
-                        }
-                        .padding(.top)
-                        .opacity(showSearch ? 1 : 0)
-                        .scaleEffect(CGSize(width: showSearch ? 1 : 1.4, height: showSearch ? 1 : 1.7))
-                        .offset(x: 0, y: showSearch ? 0 : 50)
-                        Spacer()
-                    }
-                    
-                }
-                .animation(.easeInOut)
+                SearchView(showSearch: $showSearch)
             
             }
         }
@@ -249,4 +207,3 @@ struct SearchButtonStyle: ButtonStyle {
             .scaleEffect(configuration.isPressed ? 0.9 : 1)
     }
 }
-

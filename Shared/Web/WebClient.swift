@@ -28,6 +28,11 @@ final class WebClient {
         }
     }
     
+    init(url: String, token: String) {
+        baseUrl = url
+        baseToken = token
+    }
+    
     func load(path: String, parameters: Param, completion: @escaping (Any?, RestError?) -> ()) -> URLSessionDataTask? {
         
 //        #if !targetEnvironment(simulator)
