@@ -25,6 +25,8 @@ class HomeLogic: ObservableObject {
     
     @Published var isfinishLoadingAfterDelay = false
     
+    private var stocksService = StocksService()
+    
     private var symbolList = [String]()
     
     init() {
@@ -48,7 +50,7 @@ class HomeLogic: ObservableObject {
     }
     
     private func fetchMarket(for symbol: String) {
-        StockServices().fetchMarket(for: symbol) { [self] result in
+        stocksService.fetchMarket(for: symbol) { [self] result in
             if let symbolMarket = result {
                 DispatchQueue.main.async {
                     self.symbolMarketList.append(symbolMarket)

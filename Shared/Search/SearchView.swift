@@ -8,7 +8,11 @@
 import SwiftUI
 
 struct SearchView: View {
-    @Binding var showSearch: Bool
+    @Binding var showSearch: Bool {
+        didSet {
+            self.searchLogic.resetValue()
+        }
+    }
     
     @ObservedObject var searchLogic = SearchLogic()
     
@@ -49,6 +53,20 @@ struct SearchView: View {
                 .opacity(showSearch ? 1 : 0)
                 .scaleEffect(CGSize(width: showSearch ? 1 : 1.4, height: showSearch ? 1 : 1.7))
                 .offset(x: 0, y: showSearch ? 0 : 50)
+                
+                ForEach(searchLogic.searchSymbolList) { searchSymbol in
+                    HStack {
+                        Text(searchSymbol.name)
+                            .padding()
+                        
+                        Text(searchSymbol.exchangeShortName)
+                    }
+                }
+                .opacity(showSearch ? 1 : 0)
+                .scaleEffect(CGSize(width: showSearch ? 1 : 1.4, height: showSearch ? 1 : 1.25))
+                .offset(x: 0, y: showSearch ? 0 : 50)
+                .animation(.easeOut(duration: 0.14))
+                
                 Spacer()
             }
             

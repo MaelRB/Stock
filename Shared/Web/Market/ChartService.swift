@@ -18,14 +18,14 @@ enum ChartRange: String {
 }
 
 class ChartService {
-    let client = WebClient(sandBox: true)
+    let client = WebClient(url: IEXsandboxUrl)
     var urlSessionTask: URLSessionDataTask? = nil
     
     func fetchMarketChart(for symbol: String, range: ChartRange, completion: @escaping ([StockPrice]?, RestError?) -> ()) {
         
         urlSessionTask?.cancel()
         
-        let parameters: Param = [:]
+        let parameters: Param = ["token": IEXsandboxToken]
         
         if range == .daily {
             urlSessionTask = client.load(path: "/stock/\(symbol)/intraday-prices", parameters: parameters) { result, error in
