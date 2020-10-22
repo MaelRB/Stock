@@ -49,18 +49,32 @@ struct SearchView: View {
                     .buttonStyle(SearchButtonStyle())
                     .padding(.trailing, 20)
                 }
-                .padding(.top)
+                .padding(.vertical)
                 .opacity(showSearch ? 1 : 0)
                 .scaleEffect(CGSize(width: showSearch ? 1 : 1.4, height: showSearch ? 1 : 1.7))
                 .offset(x: 0, y: showSearch ? 0 : 50)
                 
                 ForEach(searchLogic.searchSymbolList) { searchSymbol in
-                    HStack {
-                        Text(searchSymbol.name)
-                            .padding()
+                    VStack(alignment: .leading) {
+                        HStack {
+                            Text(searchSymbol.symbol)
+                                .font(.subheadline)
+                                .fontWeight(.bold)
+                            
+                            Color(.black).opacity(0.75)
+                                .frame(width: 1)
+                            
+                            Text(searchSymbol.exchangeShortName)
+                                .font(.caption)
+                        }
+                        .frame(maxHeight: 22)
                         
-                        Text(searchSymbol.exchangeShortName)
+                        Text(searchSymbol.name)
+                        
+                        Divider()
                     }
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 6)
                 }
                 .opacity(showSearch ? 1 : 0)
                 .scaleEffect(CGSize(width: showSearch ? 1 : 1.4, height: showSearch ? 1 : 1.25))

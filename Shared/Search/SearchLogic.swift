@@ -11,15 +11,17 @@ class SearchLogic: ObservableObject {
     
     @Published var userQuery = "" {
         didSet {
-            fetchUserQuery()
+            if userQuery.isEmpty == false {
+                fetchUserQuery()
+            }
         }
     }
     
     @Published var searchSymbolList = [SearchSymbol]()
     
     func resetValue() {
+        searchSymbolList.removeAll()
         userQuery = ""
-        searchSymbolList = []
     }
     
     private var searchService = SearchService()
