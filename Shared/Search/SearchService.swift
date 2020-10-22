@@ -10,19 +10,28 @@ import Foundation
 class SearchService {
     
     private let client = WebClient(url: FMPurl)
+    private let stocksService = StocksService()
     
     var urlSessionTask: URLSessionDataTask? = nil
     
-    func fetch(for params: Param, completion: @escaping ([SearchSymbol]?, Error?) -> ()) {
+    func fetch(for params: Param, completion: @escaping ([SearchResult]?, Error?) -> ()) {
         
         urlSessionTask?.cancel()
         
         urlSessionTask = client.load(parameters: params) { (result, error) in
-            var searchSymbolList: [SearchSymbol]? = nil
             if let data = result as? Data {
-                searchSymbolList = self.decode(data) 
+                let searchSymbolList = self.decode(data)
+                if let safeList = searchSymbolList {
+                    self.fetchMarketInfo(for: safeList) { (result) in
+                        completion(result, error)
+                    }
+                } else {
+                    completion(nil, error)
+                }
+                
+            } else {
+                completion(nil, error)
             }
-            completion(searchSymbolList, error)
         }
     }
     
@@ -38,5 +47,31 @@ class SearchService {
         }
     }
     
+    private func fetchMarketInfo(for symbolList: [SearchSymbol], completion: @escaping ([SearchResult]) -> ()) {
+        var searchResult = [SearchResult?]() {
+            didSet {
+                if searchResult.count == symbolList.count {
+                    searchResult.removeAll { $0 == nil }
+                    
+                    var result: [SearchResult] = []
+                    searchResult.forEach { result.append($0!)}
+                    completion(result)
+                }
+            }
+        }
+        
+        for symbol in symbolList {
+            stocksService.fetchMarketInfo(for: symbol.symbol.lowercased()) { (quote, error) in
+                if error != nil {
+                    print(error!)
+                } else if let safeQuote = quote {
+                    searchResult.append(SearchResult(symbolSearch: symbol, marquetInfo: safeQuote))
+                } else {
+                    searchResult.append(nil)
+                }
+            }
+        }
+        
+    }
     
 }

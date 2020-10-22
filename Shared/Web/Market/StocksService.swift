@@ -8,7 +8,7 @@
 import Foundation
 
 final class StocksService {
-    let client = WebClient(url: IEXsandboxUrl)
+    let client = WebClient(url: IEXurl)
     
     func fetchMarket(for symbol: String, completion: @escaping (SymbolMarket?) -> ()) {
         var symbolMarket = SymbolMarket(symbolName: symbol) {
@@ -41,7 +41,7 @@ final class StocksService {
     @discardableResult
     func fetchMarketInfo(for symbol: String, completion: @escaping (MarketQuote?, RestError?) -> ()) -> URLSessionDataTask? {
         
-        let parameters: Param = ["displayPercent": true, "token": IEXsandboxToken]
+        let parameters: Param = ["displayPercent": true, "token": IEXtoken]
         
         return client.load(path: "/stock/\(symbol)/quote", parameters: parameters) { result, error in
             var quote: MarketQuote? = nil
@@ -55,7 +55,7 @@ final class StocksService {
     @discardableResult
     func fetchLogo(for symbol: String, completion: @escaping (URL?, RestError?) -> ()) -> URLSessionDataTask? {
         
-        let parameters: Param = ["token": IEXsandboxToken]
+        let parameters: Param = ["token": IEXtoken]
         
         return client.load(path: "/stock/\(symbol)/logo", parameters: parameters) { result, error in
             var url: URL? = nil
@@ -85,7 +85,7 @@ final class StocksService {
             return quote
         }
         catch {
-            print(error)
+            print(error.localizedDescription)
             return nil
         }
     }

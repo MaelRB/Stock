@@ -9,9 +9,9 @@ import UIKit
 
 struct MarketQuote: Codable {
     let companyName: String
-    let latestPrice: CGFloat
-    let changePercent: CGFloat
-    let marketCap: Int
+    let latestPrice: CGFloat?
+    let changePercent: CGFloat?
+    let marketCap: Int?
     let volume: Int?
     let high: CGFloat?
     let low: CGFloat?

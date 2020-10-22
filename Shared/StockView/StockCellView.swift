@@ -30,7 +30,7 @@ struct StockCellView: View {
                         
                         Spacer()
                         
-                        RightComponentView(symbolMarket: symbolMarket)
+                        RightComponentView(marketInfo: symbolMarket.marketInfo!)
                             .padding(.trailing, 20)
                     }
                     .animation(.easeInOut)
@@ -39,7 +39,7 @@ struct StockCellView: View {
                     
                     VStack(spacing: 15) {
                         StockChart(symbolMarket: symbolMarket, show: $show)
-                            .foregroundColor(symbolMarket.marketInfo!.changePercent < 0 ? Color(#colorLiteral(red: 0.9999999404, green: 0.1764707565, blue: 0.3333333135, alpha: 1)) : Color(#colorLiteral(red: 0.007843137255, green: 0.768627451, blue: 0.5843137255, alpha: 1)))
+                            .foregroundColor(symbolMarket.marketInfo!.changePercent ?? 0 < 0 ? Color(#colorLiteral(red: 0.9999999404, green: 0.1764707565, blue: 0.3333333135, alpha: 1)) : Color(#colorLiteral(red: 0.007843137255, green: 0.768627451, blue: 0.5843137255, alpha: 1)))
                             .animation(.easeInOut)
                     }
                     .frame(height: self.show ? 260 : 0)
@@ -122,25 +122,25 @@ struct CenterComponentView: View {
 }
 
 struct RightComponentView: View {
-    var symbolMarket: SymbolMarket
+    var marketInfo: MarketQuote
     
     var body: some View {
         VStack(alignment: .trailing, spacing: 14) {
             
-            Text("$\(roundNumber(symbolMarket.marketInfo!.latestPrice), specifier: "%g")")
+            Text("$\(roundNumber(marketInfo.latestPrice ?? 0), specifier: "%g")")
                 .font(.system(size: 18, weight: .semibold, design: .rounded))
             HStack(spacing: 8) {
-                if symbolMarket.marketInfo!.changePercent < 0 {
+                if marketInfo.changePercent ?? 0 < 0 {
                     Image(systemName: "arrow.down.right")
                 } else {
                     Image(systemName: "arrow.up.right")
                 }
                 
-                Text("\(roundNumber(symbolMarket.marketInfo!.changePercent), specifier: "%g")%")
+                Text("\(roundNumber(marketInfo.changePercent ?? 0), specifier: "%g")%")
                     .font(.system(size: 16, weight: .semibold, design: .rounded))
                     .lineLimit(1)
             }
-            .foregroundColor(symbolMarket.marketInfo!.changePercent < 0 ? Color(#colorLiteral(red: 0.9999999404, green: 0.1764707565, blue: 0.3333333135, alpha: 1)) : Color(#colorLiteral(red: 0.007843137255, green: 0.768627451, blue: 0.5843137255, alpha: 1)))
+            .foregroundColor(marketInfo.changePercent ?? 0 < 0 ? Color(#colorLiteral(red: 0.9999999404, green: 0.1764707565, blue: 0.3333333135, alpha: 1)) : Color(#colorLiteral(red: 0.007843137255, green: 0.768627451, blue: 0.5843137255, alpha: 1)))
         }
     }
     

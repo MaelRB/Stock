@@ -96,7 +96,7 @@ struct StockChart: View {
     }
     
     private func changeStrokeColor() {
-        strokeColor = symbolMarket.marketInfo!.changePercent < 0 ? #colorLiteral(red: 0.9999999404, green: 0.1764707565, blue: 0.3333333135, alpha: 1) : #colorLiteral(red: 0.007843137255, green: 0.768627451, blue: 0.5843137255, alpha: 1)
+        strokeColor = symbolMarket.marketInfo!.changePercent ?? 0 < 0 ? #colorLiteral(red: 0.9999999404, green: 0.1764707565, blue: 0.3333333135, alpha: 1) : #colorLiteral(red: 0.007843137255, green: 0.768627451, blue: 0.5843137255, alpha: 1)
     }
     
     private func getMin() -> CGFloat {

@@ -7,6 +7,12 @@
 
 import Foundation
 
+struct SearchResult: Identifiable {
+    let id = UUID()
+    let symbolSearch: SearchSymbol
+    let marquetInfo: MarketQuote
+}
+
 class SearchLogic: ObservableObject {
     
     @Published var userQuery = "" {
@@ -17,10 +23,10 @@ class SearchLogic: ObservableObject {
         }
     }
     
-    @Published var searchSymbolList = [SearchSymbol]()
+    @Published var searchResultList = [SearchResult]()
     
     func resetValue() {
-        searchSymbolList.removeAll()
+        searchResultList.removeAll()
         userQuery = ""
     }
     
@@ -34,12 +40,13 @@ class SearchLogic: ObservableObject {
         }
     }
     
-    private func manageResult(_ result: [SearchSymbol]?, error: Error?) {
+    private func manageResult(_ result: [SearchResult]?, error: Error?) {
         if error != nil {
             print(error!)
         } else {
             guard let safeResult = result else { return }
-            self.searchSymbolList = safeResult
+            self.searchResultList = safeResult
         }
     }
+    
 }

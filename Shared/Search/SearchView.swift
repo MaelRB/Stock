@@ -54,32 +54,11 @@ struct SearchView: View {
                 .scaleEffect(CGSize(width: showSearch ? 1 : 1.4, height: showSearch ? 1 : 1.7))
                 .offset(x: 0, y: showSearch ? 0 : 50)
                 
-                ForEach(searchLogic.searchSymbolList) { searchSymbol in
-                    VStack(alignment: .leading) {
-                        HStack {
-                            Text(searchSymbol.symbol)
-                                .font(.subheadline)
-                                .fontWeight(.bold)
-                            
-                            Color(.black).opacity(0.75)
-                                .frame(width: 1)
-                            
-                            Text(searchSymbol.exchangeShortName)
-                                .font(.caption)
-                        }
-                        .frame(maxHeight: 22)
-                        
-                        Text(searchSymbol.name)
-                        
-                        Divider()
-                    }
-                    .padding(.horizontal, 20)
-                    .padding(.vertical, 6)
-                }
-                .opacity(showSearch ? 1 : 0)
-                .scaleEffect(CGSize(width: showSearch ? 1 : 1.4, height: showSearch ? 1 : 1.25))
-                .offset(x: 0, y: showSearch ? 0 : 50)
-                .animation(.easeOut(duration: 0.14))
+                SearchResultList(searchResultList: $searchLogic.searchResultList)
+                    .opacity(showSearch ? 1 : 0)
+                    .scaleEffect(CGSize(width: showSearch ? 1 : 1.4, height: showSearch ? 1 : 1.25))
+                    .offset(x: 0, y: showSearch ? 0 : 50)
+                    .animation(.easeOut(duration: 0.14))
                 
                 Spacer()
             }
@@ -92,5 +71,44 @@ struct SearchView: View {
 struct SearchView_Previews: PreviewProvider {
     static var previews: some View {
         SearchView(showSearch: .constant(true))
+    }
+}
+
+struct SearchResultList: View {
+    @Binding var searchResultList: [SearchResult]
+    
+    var body: some View {
+        ForEach(searchResultList) { result in
+            VStack {
+                HStack(spacing: 8) {
+                    VStack(alignment: .leading) {
+                        HStack {
+                            Text(result.symbolSearch.symbol)
+                                .font(.subheadline)
+                                .fontWeight(.bold)
+                            
+                            Color(.black).opacity(0.75)
+                                .frame(width: 1)
+                            
+                            Text(result.symbolSearch.exchangeShortName)
+                                .font(.caption)
+                        }
+                        .frame(maxHeight: 22)
+                        
+                        Text(result.symbolSearch.name)
+                            .lineLimit(2)
+                            .frame(maxHeight: 44)
+                    }
+                    
+                    Spacer()
+                    
+                    RightComponentView(marketInfo: result.marquetInfo)
+                }
+                
+                Divider()
+            }
+            .padding(.horizontal, 20)
+            .padding(.vertical, 4)
+        }
     }
 }
