@@ -54,7 +54,7 @@ struct SearchView: View {
                 .scaleEffect(CGSize(width: showSearch ? 1 : 1.4, height: showSearch ? 1 : 1.7))
                 .offset(x: 0, y: showSearch ? 0 : 50)
                 
-                SearchResultList(searchResultList: $searchLogic.searchResultList)
+                SearchResultList(searchResultList: $searchLogic.searchResultList, showSearch: $showSearch)
                     .opacity(showSearch ? 1 : 0)
                     .scaleEffect(CGSize(width: showSearch ? 1 : 1.4, height: showSearch ? 1 : 1.25))
                     .offset(x: 0, y: showSearch ? 0 : 50)
@@ -76,6 +76,7 @@ struct SearchView_Previews: PreviewProvider {
 
 struct SearchResultList: View {
     @Binding var searchResultList: [SearchResult]
+    @Binding var showSearch: Bool
     
     var body: some View {
         ForEach(searchResultList) { result in
@@ -109,6 +110,9 @@ struct SearchResultList: View {
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 4)
+            .onTapGesture(perform: {
+                self.showSearch = false
+            })
         }
     }
 }
