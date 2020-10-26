@@ -7,21 +7,8 @@
 
 import Foundation
 
-struct SymbolMarket: Identifiable {
-    let id = UUID()
-    var show: Bool = false
-    var symbolName: String
-    var stockPriceList: [StockPrice]?
-    var marketInfo: MarketQuote?
-    var logo: URL?
-    
-    func isComplete() ->Bool {
-        return stockPriceList != nil && marketInfo != nil && logo != nil
-    }
-}
-
-final class StockServices {
-    let client = WebClient(baseUrl: "https://cloud.iexapis.com/stable")
+final class StocksService {
+    let client = WebClient(url: IEXurl)
     
     func fetchMarket(for symbol: String, completion: @escaping (SymbolMarket?) -> ()) {
         var symbolMarket = SymbolMarket(symbolName: symbol) {
@@ -41,15 +28,6 @@ final class StockServices {
             }
         }
         
-        fetchMarketChart(for: symbol) { (result, error) in
-            if error != nil {
-                print(error?.localizedDescription as Any)
-                // To do : handle error
-            } else if let list = result {
-                symbolMarket.stockPriceList = list
-            }
-        }
-        
         fetchLogo(for: symbol) { (result, error) in
             if error != nil {
                 print(error?.localizedDescription as Any)
@@ -61,26 +39,9 @@ final class StockServices {
     }
     
     @discardableResult
-    func fetchMarketChart(for symbol: String, completion: @escaping ([StockPrice]?, RestError?) -> ()) -> URLSessionDataTask? {
-        
-        let parameters: Param = [:]
-        
-        return client.load(path: "/stock/\(symbol)/intraday-prices", parameters: parameters) { result, error in
-            var stocks: [StockPrice]? = nil
-            if let data = result as? Data {
-                stocks = self.parseStockPrice(data)
-                if let list = stocks {
-                    stocks = self.removeUselessIntradayPrices(list)
-                }
-            }
-            completion(stocks, error)
-        }
-    }
-    
-    @discardableResult
     func fetchMarketInfo(for symbol: String, completion: @escaping (MarketQuote?, RestError?) -> ()) -> URLSessionDataTask? {
         
-        let parameters: Param = ["displayPercent": true]
+        let parameters: Param = ["displayPercent": true, "token": IEXtoken]
         
         return client.load(path: "/stock/\(symbol)/quote", parameters: parameters) { result, error in
             var quote: MarketQuote? = nil
@@ -94,7 +55,7 @@ final class StockServices {
     @discardableResult
     func fetchLogo(for symbol: String, completion: @escaping (URL?, RestError?) -> ()) -> URLSessionDataTask? {
         
-        let parameters: Param = [:]
+        let parameters: Param = ["token": IEXtoken]
         
         return client.load(path: "/stock/\(symbol)/logo", parameters: parameters) { result, error in
             var url: URL? = nil
@@ -124,7 +85,7 @@ final class StockServices {
             return quote
         }
         catch {
-            print(error)
+            print(error.localizedDescription)
             return nil
         }
     }
@@ -140,17 +101,5 @@ final class StockServices {
             print(error)
             return nil
         }
-    }
-    
-    private func removeUselessIntradayPrices(_ list: [StockPrice]) -> [StockPrice] {
-        var copyList = list
-        copyList.removeAll {
-            if $0.average == nil {
-                return true
-            } else {
-                return $0.minute?.last! != "0" && $0.minute?.last! != "5"
-            }
-        }
-        return copyList
     }
 }

@@ -9,14 +9,15 @@ import Foundation
 import Network
 
 final class WebClient {
-    private var token = "pk_16a20865e8d0409aa46f7a6866294093"
-    private var baseUrl: String?
     
-    init(baseUrl: String) {
-        self.baseUrl = baseUrl
+    
+    private var baseUrl: String
+    
+    init(url: String) {
+        baseUrl = url
     }
     
-    func load(path: String, parameters: Param, completion: @escaping (Any?, RestError?) -> ()) -> URLSessionDataTask? {
+    func load(path: String = "", parameters: Param, completion: @escaping (Any?, RestError?) -> ()) -> URLSessionDataTask? {
         
 //        #if !targetEnvironment(simulator)
 //        if NWPathMonitor().currentPath.status == .unsatisfied {
@@ -25,12 +26,9 @@ final class WebClient {
 //        }
 //        #endif
         
-        var params = parameters
-        params["token"] = token
-        
         print("path \(path)")
         
-        let request = URLRequest(baseUrl: baseUrl!, path: path, parameters: params)
+        let request = URLRequest(baseUrl: baseUrl, path: path, parameters: parameters)
         
         let task = URLSession.shared.dataTask(with: request) { (data, _, error) in
             if let data = data {
